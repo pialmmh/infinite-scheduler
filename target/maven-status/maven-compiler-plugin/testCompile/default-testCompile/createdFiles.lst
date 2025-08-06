@@ -1,6 +1,0 @@
-com/telcobright/scheduler/ImmediateExecutionTest.class
-com/telcobright/scheduler/SchedulerConfigTest.class
-com/telcobright/scheduler/TableCreationTest.class
-com/telcobright/scheduler/QuartzTableCreationTest.class
-com/telcobright/scheduler/MonitoringDemoTest.class
-com/telcobright/scheduler/SmsJobTest.class

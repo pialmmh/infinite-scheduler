@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ public class SchedulerMonitor {
     
     private static final Logger logger = LoggerFactory.getLogger(SchedulerMonitor.class);
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final ZoneId BANGLADESH_TIMEZONE = ZoneId.of("Asia/Dhaka");
     
     private final Scheduler quartzScheduler;
     private final AtomicInteger totalJobsScheduled = new AtomicInteger(0);
@@ -74,9 +76,9 @@ public class SchedulerMonitor {
             status.append("║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║\n");
             status.append("╠══════════════════════════════════════════════════════════════════════════════╣\n");
             
-            // Current time
-            LocalDateTime now = LocalDateTime.now();
-            status.append(String.format("║ Current Time:         %-58s ║\n", now.format(formatter)));
+            // Current time in Bangladesh timezone
+            LocalDateTime nowBD = ZonedDateTime.now(BANGLADESH_TIMEZONE).toLocalDateTime();
+            status.append(String.format("║ Current Time (BD):    %-58s ║\n", nowBD.format(formatter) + " GMT+6"));
             
             // Scheduler state
             boolean isStarted = quartzScheduler.isStarted();
@@ -85,16 +87,16 @@ public class SchedulerMonitor {
             String state = isShutdown ? "SHUTDOWN" : (isInStandbyMode ? "STANDBY" : (isStarted ? "RUNNING" : "STOPPED"));
             status.append(String.format("║ Scheduler State:      %-58s ║\n", state));
             
-            // Last fetch information
+            // Last fetch information in Bangladesh time
             if (lastFetchTime.get() > 0) {
                 LocalDateTime lastFetch = LocalDateTime.ofInstant(
                     java.time.Instant.ofEpochMilli(lastFetchTime.get()), 
-                    ZoneId.systemDefault()
+                    BANGLADESH_TIMEZONE
                 );
-                status.append(String.format("║ Last Fetch:           %-58s ║\n", 
+                status.append(String.format("║ Last Fetch (BD):      %-58s ║\n", 
                     lastFetch.format(formatter) + " (" + lastFetchJobCount.get() + " jobs)"));
             } else {
-                status.append(String.format("║ Last Fetch:           %-58s ║\n", "Not yet fetched"));
+                status.append(String.format("║ Last Fetch (BD):      %-58s ║\n", "Not yet fetched"));
             }
             
             // Job statistics
@@ -141,9 +143,9 @@ public class SchedulerMonitor {
                     
                     Date nextFireTime = trigger.getNextFireTime();
                     if (nextFireTime != null) {
-                        LocalDateTime nextTime = LocalDateTime.ofInstant(
+                        LocalDateTime nextTimeBD = LocalDateTime.ofInstant(
                             nextFireTime.toInstant(), 
-                            ZoneId.systemDefault()
+                            BANGLADESH_TIMEZONE
                         );
                         
                         String jobId = jobKey.getName();
@@ -151,7 +153,7 @@ public class SchedulerMonitor {
                             jobId = jobId.substring(0, 27) + "...";
                         }
                         
-                        String timeStr = nextTime.format(formatter);
+                        String timeStr = nextTimeBD.format(formatter) + " BD";
                         String info = String.format("%s @ %s", jobId, timeStr);
                         status.append(String.format("║ %d. %-73s ║\n", upcomingCount + 1, info));
                         upcomingCount++;
@@ -159,7 +161,7 @@ public class SchedulerMonitor {
                         // Track the very next job
                         if (upcomingCount == 1) {
                             nextJobId = jobKey.getName();
-                            nextRunTime = nextTime;
+                            nextRunTime = nextTimeBD;
                         }
                     }
                 }

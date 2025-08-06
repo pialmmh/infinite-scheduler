@@ -9,10 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class SmsJob implements Job {
     
     private static final Logger logger = LoggerFactory.getLogger(SmsJob.class);
+    private static final ZoneId BANGLADESH_TIMEZONE = ZoneId.of("Asia/Dhaka");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -21,7 +26,10 @@ public class SmsJob implements Job {
             String entityIdStr = context.getJobDetail().getJobDataMap().getString("entityId");
             String scheduledTimeStr = context.getJobDetail().getJobDataMap().getString("scheduledTime");
             
-            logger.info("Executing SMS job for entity ID: {} scheduled at: {}", entityIdStr, scheduledTimeStr);
+            // Get current Bangladesh time for logging
+            LocalDateTime nowBD = ZonedDateTime.now(BANGLADESH_TIMEZONE).toLocalDateTime();
+            logger.info("🇧🇩 Executing SMS job at {} BD for entity ID: {} (scheduled: {})", 
+                nowBD.format(TIME_FORMATTER), entityIdStr, scheduledTimeStr);
             
             // Get scheduler instance from context to access repository
             @SuppressWarnings("unchecked")
@@ -39,9 +47,11 @@ public class SmsJob implements Job {
                 return;
             }
             
-            // Execute SMS sending logic
-            logger.info("Sending SMS to {} with message: {}", 
-                smsEntity.getPhoneNumber(), smsEntity.getMessage());
+            // Execute SMS sending logic with Bangladesh context
+            logger.info("📱 Sending SMS to {} with message: {}", 
+                smsEntity.getPhoneNumber(), 
+                smsEntity.getMessage().length() > 100 ? 
+                    smsEntity.getMessage().substring(0, 100) + "..." : smsEntity.getMessage());
             
             // Simulate SMS sending process
             Thread.sleep(100); // Simulate network delay
@@ -52,8 +62,9 @@ public class SmsJob implements Job {
             // Note: Repository save method might not be available
             // The entity status is updated in-memory for this execution
             
-            logger.info("SMS sent successfully for ID: {} to {}", 
-                entityId, smsEntity.getPhoneNumber());
+            LocalDateTime completedBD = ZonedDateTime.now(BANGLADESH_TIMEZONE).toLocalDateTime();
+            logger.info("✅ SMS sent successfully at {} BD for ID: {} to {}", 
+                completedBD.format(TIME_FORMATTER), entityId, smsEntity.getPhoneNumber());
                 
         } catch (SchedulerException e) {
             logger.error("Failed to get scheduler from context", e);
