@@ -1,0 +1,550 @@
+2025-08-07 03:08:46.554 [main] INFO  c.t.scheduler.InfiniteScheduler - Creating internal repository with database: scheduler, tablePrefix: sms_demo
+2025-08-07 03:08:46.557 [main] INFO  c.t.scheduler.InfiniteScheduler - Repository configured with MySQL: 127.0.0.1:3306/scheduler (user: root)
+2025-08-07 03:08:48.928 [main] INFO  c.t.scheduler.InfiniteScheduler - Initializing Quartz tables...
+2025-08-07 03:08:48.941 [main] INFO  c.t.scheduler.QuartzTableManager - Checking Quartz tables...
+2025-08-07 03:08:48.956 [main] INFO  c.t.scheduler.QuartzTableManager - Missing Quartz tables: [QRTZ_JOB_DETAILS, QRTZ_TRIGGERS, QRTZ_SIMPLE_TRIGGERS, QRTZ_CRON_TRIGGERS, QRTZ_SIMPROP_TRIGGERS, QRTZ_BLOB_TRIGGERS, QRTZ_CALENDARS, QRTZ_PAUSED_TRIGGER_GRPS, QRTZ_FIRED_TRIGGERS, QRTZ_SCHEDULER_STATE, QRTZ_LOCKS]. Creating them now...
+2025-08-07 03:08:48.957 [main] INFO  c.t.scheduler.QuartzTableManager - Total statements found: 50
+2025-08-07 03:08:48.957 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 0: '-- Quartz MySQL Schema for Infinite Scheduler
+-- Run this script to create the necessary Quartz tabl...'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 1: '-- USE scheduler'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 2: '-- Drop tables if they exist (for clean setup)
+DROP TABLE IF EXISTS QRTZ_FIRED_TRIGGERS'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 3: 'DROP TABLE IF EXISTS QRTZ_PAUSED_TRIGGER_GRPS'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 4: 'DROP TABLE IF EXISTS QRTZ_SCHEDULER_STATE'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 5: 'DROP TABLE IF EXISTS QRTZ_LOCKS'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 6: 'DROP TABLE IF EXISTS QRTZ_SIMPLE_TRIGGERS'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 7: 'DROP TABLE IF EXISTS QRTZ_CRON_TRIGGERS'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 8: 'DROP TABLE IF EXISTS QRTZ_SIMPROP_TRIGGERS'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Statement 9: 'DROP TABLE IF EXISTS QRTZ_BLOB_TRIGGERS'
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Creating tables...
+2025-08-07 03:08:48.958 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_JOB_DETAILS(
+SCHED_NAME VARCHAR(120) NOT NULL,
+JOB_NAME VARCHAR(190) NOT NULL,
+JOB...
+2025-08-07 03:08:48.982 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:48.982 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(190) NOT NULL,
+T...
+2025-08-07 03:08:49.010 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.010 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_SIMPLE_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(190) NOT ...
+2025-08-07 03:08:49.032 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.032 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_CRON_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(190) NOT NU...
+2025-08-07 03:08:49.056 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.056 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_SIMPROP_TRIGGERS
+(
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(190) NOT...
+2025-08-07 03:08:49.083 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.083 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_BLOB_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(190) NOT NU...
+2025-08-07 03:08:49.114 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.115 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_CALENDARS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+CALENDAR_NAME VARCHAR(190) NOT NULL,...
+2025-08-07 03:08:49.143 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.143 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_PAUSED_TRIGGER_GRPS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_GROUP VARCHAR(190)...
+2025-08-07 03:08:49.169 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.170 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_FIRED_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+ENTRY_ID VARCHAR(95) NOT NULL,
+...
+2025-08-07 03:08:49.198 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.198 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_SCHEDULER_STATE (
+SCHED_NAME VARCHAR(120) NOT NULL,
+INSTANCE_NAME VARCHAR(190) NOT...
+2025-08-07 03:08:49.224 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.225 [main] INFO  c.t.scheduler.QuartzTableManager - Creating table: CREATE TABLE QRTZ_LOCKS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+LOCK_NAME VARCHAR(40) NOT NULL,
+PRIMARY ...
+2025-08-07 03:08:49.252 [main] INFO  c.t.scheduler.QuartzTableManager - Table created successfully
+2025-08-07 03:08:49.252 [main] INFO  c.t.scheduler.QuartzTableManager - Created 11 tables total
+2025-08-07 03:08:49.252 [main] INFO  c.t.scheduler.QuartzTableManager - Inserting initial data...
+2025-08-07 03:08:49.253 [main] INFO  c.t.scheduler.QuartzTableManager - Inserting data: INSERT INTO QRTZ_LOCKS values('InfiniteScheduler', 'TRIGGER_ACCESS')
+2025-08-07 03:08:49.254 [main] INFO  c.t.scheduler.QuartzTableManager - Inserting data: INSERT INTO QRTZ_LOCKS values('InfiniteScheduler', 'JOB_ACCESS')
+2025-08-07 03:08:49.256 [main] INFO  c.t.scheduler.QuartzTableManager - Inserting data: INSERT INTO QRTZ_LOCKS values('InfiniteScheduler', 'CALENDAR_ACCESS')
+2025-08-07 03:08:49.257 [main] INFO  c.t.scheduler.QuartzTableManager - Inserting data: INSERT INTO QRTZ_LOCKS values('InfiniteScheduler', 'STATE_ACCESS')
+2025-08-07 03:08:49.258 [main] INFO  c.t.scheduler.QuartzTableManager - Inserting data: INSERT INTO QRTZ_LOCKS values('InfiniteScheduler', 'MISFIRE_ACCESS')
+2025-08-07 03:08:49.259 [main] INFO  c.t.scheduler.QuartzTableManager - Creating indexes...
+2025-08-07 03:08:49.259 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_J_REQ_RECOVERY ON QRTZ_JOB_D...
+2025-08-07 03:08:49.287 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_J_GRP ON QRTZ_JOB_DETAILS(SC...
+2025-08-07 03:08:49.310 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_J ON QRTZ_TRIGGERS(SCHED_N...
+2025-08-07 03:08:49.338 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_JG ON QRTZ_TRIGGERS(SCHED_...
+2025-08-07 03:08:49.356 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_C ON QRTZ_TRIGGERS(SCHED_N...
+2025-08-07 03:08:49.381 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_G ON QRTZ_TRIGGERS(SCHED_N...
+2025-08-07 03:08:49.404 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_STATE ON QRTZ_TRIGGERS(SCH...
+2025-08-07 03:08:49.427 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_N_STATE ON QRTZ_TRIGGERS(S...
+2025-08-07 03:08:49.451 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_N_G_STATE ON QRTZ_TRIGGERS...
+2025-08-07 03:08:49.476 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_NEXT_FIRE_TIME ON QRTZ_TRI...
+2025-08-07 03:08:49.498 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_NFT_ST ON QRTZ_TRIGGERS(SC...
+2025-08-07 03:08:49.521 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_NFT_MISFIRE ON QRTZ_TRIGGE...
+2025-08-07 03:08:49.546 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_NFT_ST_MISFIRE ON QRTZ_TRI...
+2025-08-07 03:08:49.570 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_T_NFT_ST_MISFIRE_GRP ON QRTZ...
+2025-08-07 03:08:49.594 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_FT_TRIG_INST_NAME ON QRTZ_FI...
+2025-08-07 03:08:49.616 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_FT_INST_JOB_REQ_RCVRY ON QRT...
+2025-08-07 03:08:49.638 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_FT_J_G ON QRTZ_FIRED_TRIGGER...
+2025-08-07 03:08:49.661 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_FT_JG ON QRTZ_FIRED_TRIGGERS...
+2025-08-07 03:08:49.683 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_FT_T_G ON QRTZ_FIRED_TRIGGER...
+2025-08-07 03:08:49.707 [main] INFO  c.t.scheduler.QuartzTableManager - Creating index: CREATE INDEX IDX_QRTZ_FT_TG ON QRTZ_FIRED_TRIGGERS...
+2025-08-07 03:08:49.729 [main] INFO  c.t.scheduler.QuartzTableManager - Successfully created all Quartz tables
+2025-08-07 03:08:49.730 [main] INFO  c.t.scheduler.InfiniteScheduler - Quartz tables initialization completed
+2025-08-07 03:08:49.764 [MLog-Init-Reporter] INFO  com.mchange.v2.log.MLog - MLog clients using slf4j logging.
+2025-08-07 03:08:49.851 [main] INFO  com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5.4 [built 23-March-2019 23:00:48 -0700; debug? true; trace: 10]
+2025-08-07 03:08:49.927 [main] INFO  c.t.scheduler.JobHistoryTracker - Job history table ensured to exist
+2025-08-07 03:08:49.928 [main] INFO  c.t.scheduler.InfiniteScheduler - Job listener added for monitoring
+2025-08-07 03:08:49.928 [main] INFO  c.t.scheduler.InfiniteScheduler - InfiniteScheduler initialized with fetch interval: 5s, lookahead: 30s, cleanup: 5min
+2025-08-07 03:08:50.354 [main] INFO  c.t.scheduler.InfiniteScheduler - Starting InfiniteScheduler...
+2025-08-07 03:08:50.373 [main] INFO  c.m.v.c.i.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> z8kfsxbczup1ir230rgz|d1f74b8, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.cj.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceSynchronousCheckins -> false, forceUseNamedDriverClass -> false, identityToken -> z8kfsxbczup1ir230rgz|d1f74b8, idleConnectionTestPeriod -> 50, initialPoolSize -> 3, jdbcUrl -> jdbc:mysql://127.0.0.1:3306/scheduler?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 10, maxStatements -> 0, maxStatementsPerConnection -> 120, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> SELECT 1, privilegeSpawnedThreads -> false, properties -> {password=******, user=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2025-08-07 03:08:50.416 [main] INFO  c.t.scheduler.QuartzCleanupService - Starting Quartz cleanup service with interval: 5 minutes
+2025-08-07 03:08:50.416 [scheduler-fetcher] INFO  c.t.scheduler.InfiniteScheduler - Fetcher thread started
+2025-08-07 03:08:50.419 [quartz-cleanup] INFO  c.t.scheduler.QuartzCleanupService - Quartz cleanup thread started
+2025-08-07 03:08:50.417 [main] INFO  c.t.scheduler.SchedulerMonitor - Scheduler monitor started
+2025-08-07 03:08:50.419 [main] INFO  c.t.scheduler.InfiniteScheduler - InfiniteScheduler started successfully
+2025-08-07 03:08:50.429 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:08:50                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         55 MB / 504 MB (Max: 7960 MB)                      ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:08:50.458 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:08:55.434 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:08:55                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         16 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:08:55.465 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:00.439 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:00                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         17 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:00.470 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:05.445 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:05                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         17 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:05.475 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:10.451 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:10                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         18 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:10.481 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:15.458 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:15                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         18 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:15.486 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:20.464 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:20                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         19 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:20.488 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:25.468 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:25                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         19 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:25.492 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:30.473 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:30                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         19 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:30.494 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:35.477 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:35                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         19 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:35.497 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:09:40.482 [scheduler-monitor] INFO  c.t.scheduler.SchedulerMonitor - 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     INFINITE SCHEDULER - REAL-TIME STATUS                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Current Time:         2025-08-07 03:09:40                                        ║
+║ Scheduler State:      RUNNING                                                    ║
+║ Last Fetch:           Not yet fetched                                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                              JOB STATISTICS                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Total Jobs Scheduled: 0                                                          ║
+║ Active Jobs in Queue: 0                                                          ║
+║ Jobs Executed:        0                                                          ║
+║ Jobs Failed:          0                                                          ║
+║ Currently Executing:  0                                                          ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                           UPCOMING JOBS (Next 5)                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ No upcoming jobs scheduled                                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                            SYSTEM RESOURCES                                     ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Memory Usage:         20 MB / 80 MB (Max: 7960 MB)                       ║
+║ Available CPUs:       8                                                          ║
+║ Thread Pool Size:     10                                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+2025-08-07 03:09:40.500 [scheduler-fetcher] ERROR c.t.scheduler.InfiniteScheduler - Error fetching and scheduling jobs
+java.sql.SQLSyntaxErrorException: Table 'scheduler.sms_demo' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at com.telcobright.db.repository.GenericMultiTableRepository.executeQuery(GenericMultiTableRepository.java:463)
+	at com.telcobright.db.repository.GenericMultiTableRepository.findAllByDateRange(GenericMultiTableRepository.java:195)
+	at com.telcobright.scheduler.InfiniteScheduler.fetchAndScheduleJobs(InfiniteScheduler.java:306)
+	at com.telcobright.scheduler.InfiniteScheduler.runFetcher(InfiniteScheduler.java:275)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:311)
+2025-08-07 03:11:52.204 [main] INFO  c.t.scheduler.InfiniteScheduler - Creating internal repository with database: scheduler, tablePrefix: sms_test
+2025-08-07 03:11:52.205 [main] INFO  c.t.scheduler.InfiniteScheduler - Repository configured with MySQL: 127.0.0.1:3306/scheduler (user: root)
+2025-08-07 03:11:54.574 [main] INFO  c.t.scheduler.InfiniteScheduler - Initializing Quartz tables...
+2025-08-07 03:11:54.586 [main] INFO  c.t.scheduler.QuartzTableManager - Checking Quartz tables...
+2025-08-07 03:11:54.602 [main] INFO  c.t.scheduler.QuartzTableManager - All Quartz tables exist
+2025-08-07 03:11:54.602 [main] INFO  c.t.scheduler.InfiniteScheduler - Quartz tables initialization completed
+2025-08-07 03:11:54.641 [MLog-Init-Reporter] INFO  com.mchange.v2.log.MLog - MLog clients using slf4j logging.
+2025-08-07 03:11:54.743 [main] INFO  com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5.4 [built 23-March-2019 23:00:48 -0700; debug? true; trace: 10]
+2025-08-07 03:11:54.794 [main] INFO  c.t.scheduler.JobHistoryTracker - Job history table ensured to exist
+2025-08-07 03:11:54.795 [main] INFO  c.t.scheduler.InfiniteScheduler - Job listener added for monitoring
+2025-08-07 03:11:54.795 [main] INFO  c.t.scheduler.InfiniteScheduler - InfiniteScheduler initialized with fetch interval: 25s, lookahead: 30s, cleanup: 60min
