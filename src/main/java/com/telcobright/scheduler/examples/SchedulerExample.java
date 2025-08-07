@@ -89,7 +89,7 @@ public class SchedulerExample {
             "SMS 5: Scheduled for " + now.plusMinutes(5).format(TIME_FORMATTER) + " BD"
         };
         
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 0; i++) {
             // Schedule jobs: 1 minute apart starting 1 minute from now
             // This will store the EXACT Bangladesh local time in the sms table
             LocalDateTime scheduledTime = now.plusMinutes(i + 1);

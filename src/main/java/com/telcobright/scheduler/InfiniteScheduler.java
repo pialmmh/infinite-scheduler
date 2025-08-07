@@ -297,7 +297,7 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime endTime = now.plusSeconds(config.getLookaheadWindowSeconds());
             
-            logger.debug("Fetching entities from {} to {}", now, endTime);
+            logger.info("🔍 Fetching entities from {} to {} (lookahead: {}s)", now, endTime, config.getLookaheadWindowSeconds());
             
             // Query by scheduled_time (sharding key) for entities scheduled in the near future
             // Since scheduled_time is now the sharding key, we can efficiently query by scheduled time
@@ -315,7 +315,16 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
             
             List<TEntity> recentEntities;
             try {
+                logger.info("📥 Querying partitioned-repo for date range: {} to {}", queryStartTime, queryEndTime);
                 recentEntities = repository.findAllByDateRange(queryStartTime, queryEndTime);
+                logger.info("📊 Found {} total entities from database", recentEntities.size());
+                
+                // Debug: show status of first few entities
+                for (int i = 0; i < Math.min(3, recentEntities.size()); i++) {
+                    TEntity entity = recentEntities.get(i);
+                    logger.info("📋 Entity {}: scheduledTime={}, scheduled={}", 
+                        entity.getId(), entity.getScheduledTime(), entity.getScheduled());
+                }
             } catch (Exception e) {
                 if (e.getMessage() != null && e.getMessage().contains("doesn't exist")) {
                     logger.info("No partitioned tables found for date range {} to {} - this is normal if no entities have been inserted yet", 
@@ -341,27 +350,50 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
                 .toList();
             
             if (candidateEntities.isEmpty()) {
-                logger.debug("No candidate entities found in scheduling time range {} to {}", now, endTime);
+                logger.info("❌ No candidate entities found in scheduling time range {} to {} (fetched {} total entities)", 
+                    now, endTime, recentEntities.size());
                 monitor.recordFetch(0);
                 return;
             }
             
+            logger.info("📋 Found {} candidate entities in time range, checking for unscheduled jobs...", candidateEntities.size());
+            
             // Batch check which entities already have jobs in Quartz
             Set<JobKey> existingJobKeys = getExistingJobKeys(candidateEntities);
             
-            // Filter out entities that already have jobs scheduled
+            // Filter out entities that already have jobs scheduled or are already marked as scheduled
             List<TEntity> entities = candidateEntities.stream()
                 .filter(entity -> {
                     JobKey jobKey = JobKey.jobKey(entity.getJobId(), "entity-jobs");
-                    return !existingJobKeys.contains(jobKey);
+                    boolean notInQuartz = !existingJobKeys.contains(jobKey);
+                    boolean notScheduled = (entity.getScheduled() == null || !entity.getScheduled());
+                    
+                    logger.debug("🔍 Entity {}: inQuartz={}, scheduled={}, willSchedule={}", 
+                        entity.getId(), !notInQuartz, entity.getScheduled(), (notInQuartz && notScheduled));
+                    
+                    return notInQuartz && notScheduled;
                 })
                 .toList();
             
             if (entities.isEmpty()) {
-                logger.debug("No new entities to schedule (filtered {} existing jobs from {} candidates)", 
-                    existingJobKeys.size(), candidateEntities.size());
+                logger.info("⚠️  No new entities to schedule (filtered {} existing jobs and {} already scheduled from {} candidates)", 
+                    existingJobKeys.size(), 
+                    candidateEntities.size() - entities.size() - existingJobKeys.size(),
+                    candidateEntities.size());
                 monitor.recordFetch(0);
                 return;
+            }
+            
+            // IMPORTANT: Mark entities as scheduled immediately after fetching to prevent re-fetching
+            for (TEntity entity : entities) {
+                try {
+                    statusUpdater.markAsScheduled((Long) entity.getId(), entity.getScheduledTime(), 
+                        config.getRepositoryTablePrefix());
+                    entity.setScheduled(true); // Update in memory as well
+                    logger.info("✅ Marked entity {} as scheduled=1 in database", entity.getId());
+                } catch (Exception e) {
+                    logger.error("Failed to mark entity {} as scheduled in database", entity.getId(), e);
+                }
             }
             
             logger.info("Found {} entities to schedule (filtered {} existing jobs from {} candidates, {} total recent)", 
@@ -428,12 +460,8 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
         
         quartzScheduler.scheduleJob(jobDetail, trigger);
         
-        // Mark entity as scheduled (for reference)
-        entity.setScheduled(true);
-        
-        // Update scheduled=1 in database
-        statusUpdater.markAsScheduled((Long) entity.getId(), entity.getScheduledTime(), 
-            config.getRepositoryTablePrefix());
+        // Note: Entity is already marked as scheduled in database during fetchAndScheduleJobs()
+        // This ensures jobs are never picked up again even if Quartz scheduling fails
         
         // Record job scheduling in history
         historyTracker.recordJobScheduled(jobId, jobName, groupName, 
@@ -539,11 +567,17 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
                         monitor.recordJobExecuted();
                         historyTracker.recordJobCompleted(jobName);
                         logger.debug("Job {} executed successfully", context.getJobDetail().getKey());
+                        
+                        // No need to update partitioned-repo - scheduled flag stays at 1
+                        // This is now Quartz's responsibility and the job is done
                     } else {
                         // Job execution failed
                         monitor.recordJobFailed();
                         historyTracker.recordJobFailed(jobName, jobException.getMessage());
                         logger.error("Job {} failed with exception", context.getJobDetail().getKey(), jobException);
+                        
+                        // No need to update partitioned-repo on failure either
+                        // scheduled=1 means it was picked up, that's all we need to track
                     }
                 }
             };

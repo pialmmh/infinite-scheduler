@@ -100,6 +100,7 @@ public class SmsEntity implements SchedulableEntity<Long> {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", message='" + message + '\'' +
                 ", status='" + status + '\'' +
+                ", scheduled=" + scheduled +
                 '}';
     }
 }

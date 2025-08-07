@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Updates scheduled status in entity tables when jobs are scheduled/completed
+ * Updates scheduled status in entity tables when jobs are picked up by scheduler
  */
 public class DatabaseStatusUpdater {
     
@@ -23,7 +23,7 @@ public class DatabaseStatusUpdater {
     }
     
     /**
-     * Updates the scheduled column to 1 when a job is scheduled to Quartz
+     * Updates the scheduled column to 1 when a job is picked up by scheduler
      */
     public void markAsScheduled(Long entityId, LocalDateTime scheduledTime, String tablePrefix) {
         String tableName = buildTableName(tablePrefix, scheduledTime);
@@ -46,29 +46,6 @@ public class DatabaseStatusUpdater {
         }
     }
     
-    /**
-     * Updates the scheduled column to 0 when a job is completed (for potential rescheduling)
-     */
-    public void markAsCompleted(Long entityId, LocalDateTime scheduledTime, String tablePrefix) {
-        String tableName = buildTableName(tablePrefix, scheduledTime);
-        String sql = "UPDATE " + tableName + " SET scheduled = 0, status = 'SENT' WHERE id = ?";
-        
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setLong(1, entityId);
-            
-            int updated = stmt.executeUpdate();
-            if (updated > 0) {
-                logger.debug("Marked entity {} as completed in table {}", entityId, tableName);
-            } else {
-                logger.warn("No rows updated when marking entity {} as completed in table {}", entityId, tableName);
-            }
-            
-        } catch (SQLException e) {
-            logger.error("Failed to mark entity {} as completed in table {}: {}", entityId, tableName, e.getMessage());
-        }
-    }
     
     /**
      * Build table name from prefix and scheduled time
