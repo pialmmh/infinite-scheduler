@@ -2,6 +2,34 @@
 
 A high-performance, scalable job scheduling system built on Quartz Scheduler with MySQL persistence, designed to handle millions to billions of scheduled jobs efficiently.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Quick Start](#quick-start)
+  - [1. Dependencies](#1-dependencies)
+  - [2. Database Setup](#2-database-setup)
+  - [3. Create Your Entity](#3-create-your-entity)
+  - [4. Set Up the Scheduler](#4-set-up-the-scheduler)
+  - [Constructor Parameters](#constructor-parameters)
+- [Configuration Options](#configuration-options)
+  - [SchedulerConfig Builder](#schedulerconfig-builder)
+  - [Important Constraints](#important-constraints)
+- [Production Configuration](#production-configuration)
+- [Architecture](#architecture)
+  - [Core Components](#core-components)
+  - [Data Flow](#data-flow)
+  - [Scheduled Flag Workflow](#scheduled-flag-workflow)
+  - [Misfire Handling](#misfire-handling)
+  - [Timeline Diagram](#timeline-diagram---how-fetch-interval--lookahead-work)
+  - [Detailed How It Works](#detailed-how-it-works)
+  - [Duplicate Detection & Cleanup](#duplicate-detection--cleanup)
+- [Examples](#examples)
+- [Performance & Monitoring](#performance--monitoring)
+- [Best Practices](#best-practices)
+- [Troubleshooting](#troubleshooting)
+- [API Reference](#api-reference)
+
 ## Overview
 
 **Infinite Scheduler** integrates with the **partitioned-repo** library's ShardingRepository interface for optimal data management and automatic cleanup. It uses Java 21 virtual threads for efficient resource utilization and provides a simple, type-safe API for scheduling entity-based jobs.
@@ -70,17 +98,36 @@ Then disable auto-creation in config:
 ### 3. Create Your Entity
 
 ```java
+@Table(name = "sms_schedules")
 public class SmsEntity implements SchedulableEntity<Long> {
+    @Id
+    @Column(name = "id")
     private Long id;
+    
+    @ShardingKey  // Partitioned-repo uses this for partitioning
+    @Column(name = "scheduled_time")
     private LocalDateTime scheduledTime;
+    
+    @Column(name = "phone_number")
     private String phoneNumber;
+    
+    @Column(name = "message")
     private String message;
+    
+    @Column(name = "scheduled")  // Important: tracks if job is picked up
+    private Boolean scheduled;
     
     @Override
     public Long getId() { return id; }
     
     @Override
     public LocalDateTime getScheduledTime() { return scheduledTime; }
+    
+    @Override
+    public Boolean getScheduled() { return scheduled; }
+    
+    @Override
+    public void setScheduled(Boolean scheduled) { this.scheduled = scheduled; }
     
     // Optional: Override for custom unique job ID
     // Default: "job-" + getId() + "-" + getScheduledTime()
@@ -112,15 +159,19 @@ SchedulerConfig config = SchedulerConfig.builder()
     .autoCleanupCompletedJobs(true) // Auto-cleanup completed jobs
     .build();
 
-// Define job executor
-Consumer<SmsEntity> smsExecutor = sms -> {
-    System.out.println("Sending SMS to " + sms.getPhoneNumber() + ": " + sms.getMessage());
-    // Your SMS sending logic here
-};
+// Define job executor implementing Quartz Job interface
+public class SmsJob implements Job {
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        String entityId = context.getJobDetail().getJobDataMap().getString("entityId");
+        System.out.println("Executing SMS job for entity: " + entityId);
+        // Your SMS sending logic here
+    }
+}
 
 // Create scheduler - partitioned-repo is created and managed internally
 InfiniteScheduler<SmsEntity, Long> scheduler = 
-    new InfiniteScheduler<>(SmsEntity.class, Long.class, config, smsExecutor);
+    new InfiniteScheduler<>(SmsEntity.class, Long.class, config, SmsJob.class);
 
 scheduler.start();
 
@@ -134,7 +185,7 @@ The `InfiniteScheduler` constructor accepts:
 - `entityClass`: The entity class (e.g., `SmsEntity.class`)
 - `keyClass`: The key class (e.g., `Long.class`)  
 - `config`: SchedulerConfig with complete MySQL and repository settings
-- `jobExecutor`: Consumer function to process entities
+- `jobClass`: Quartz Job implementation class (e.g., `SmsJob.class`)
 
 **Key Benefits**:
 - **Single Configuration**: All settings specified once in `SchedulerConfig`
@@ -210,8 +261,24 @@ SchedulerConfig productionConfig = SchedulerConfig.builder()
 
 1. **Virtual Thread Fetcher**: Runs every `n` seconds, queries repository for upcoming jobs
 2. **Job Scheduling**: Creates Quartz jobs for each entity, persists to MySQL
-3. **Job Execution**: Quartz fires jobs at scheduled times, loads entity from repository
+3. **Job Execution**: Quartz fires jobs at scheduled times
 4. **Auto-Cleanup**: Repository retention policies and Quartz cleanup maintain system health
+
+### Scheduled Flag Workflow
+
+The `scheduled` boolean flag in your entity tracks whether a job has been picked up:
+
+1. **Initial State**: Entity inserted with `scheduled=0` (false) - not yet picked up
+2. **Fetching**: Scheduler queries for entities where `scheduled=0` or `null`
+3. **Scheduling**: When picked up, immediately sets `scheduled=1` in database
+4. **Quartz Takes Over**: Job is now Quartz's responsibility, `scheduled=1` remains forever
+5. **No Further Updates**: Once `scheduled=1`, the partitioned-repo is never updated again
+
+**Key Points:**
+- `scheduled=0`: Job available for pickup
+- `scheduled=1`: Job picked up by scheduler, now managed by Quartz
+- Jobs with `scheduled=1` are never fetched again
+- This prevents duplicate scheduling across fetch cycles
 
 ### Misfire Handling
 
