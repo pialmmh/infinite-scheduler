@@ -24,7 +24,9 @@ public class SchedulerConfig {
     private final int cleanupIntervalMinutes;
     private final String repositoryDatabase;
     private final String repositoryTablePrefix;
-    
+    private final boolean enableUI;
+    private final int uiPort;
+
     private SchedulerConfig(Builder builder) {
         this.fetchIntervalSeconds = builder.fetchIntervalSeconds;
         this.lookaheadWindowSeconds = builder.lookaheadWindowSeconds;
@@ -44,7 +46,9 @@ public class SchedulerConfig {
         this.cleanupIntervalMinutes = builder.cleanupIntervalMinutes;
         this.repositoryDatabase = builder.repositoryDatabase;
         this.repositoryTablePrefix = builder.repositoryTablePrefix;
-        
+        this.enableUI = builder.enableUI;
+        this.uiPort = builder.uiPort;
+
         validate();
     }
     
@@ -91,6 +95,9 @@ public class SchedulerConfig {
         }
         if (repositoryTablePrefix == null || repositoryTablePrefix.trim().isEmpty()) {
             throw new IllegalArgumentException("Repository table prefix is required");
+        }
+        if (enableUI && (uiPort <= 0 || uiPort > 65535)) {
+            throw new IllegalArgumentException("UI port must be between 1 and 65535 when UI is enabled");
         }
     }
     
@@ -165,7 +172,15 @@ public class SchedulerConfig {
     public String getRepositoryTablePrefix() {
         return repositoryTablePrefix;
     }
-    
+
+    public boolean isEnableUI() {
+        return enableUI;
+    }
+
+    public int getUiPort() {
+        return uiPort;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -188,7 +203,9 @@ public class SchedulerConfig {
         private int cleanupIntervalMinutes = 60;
         private String repositoryDatabase;
         private String repositoryTablePrefix;
-        
+        private boolean enableUI = false; // Disabled by default
+        private int uiPort = 9000;
+
         public Builder fetchInterval(int fetchIntervalSeconds) {
             this.fetchIntervalSeconds = fetchIntervalSeconds;
             return this;
@@ -307,7 +324,31 @@ public class SchedulerConfig {
             this.repositoryTablePrefix = repositoryTablePrefix;
             return this;
         }
-        
+
+        /**
+         * Enable or disable the web UI for viewing and managing scheduled jobs.
+         * Default: disabled (false)
+         *
+         * @param enableUI true to enable UI, false to disable
+         * @return this builder
+         */
+        public Builder enableUI(boolean enableUI) {
+            this.enableUI = enableUI;
+            return this;
+        }
+
+        /**
+         * Set the port for the web UI server.
+         * Default: 9000
+         *
+         * @param uiPort port number (1-65535)
+         * @return this builder
+         */
+        public Builder uiPort(int uiPort) {
+            this.uiPort = uiPort;
+            return this;
+        }
+
         public SchedulerConfig build() {
             return new SchedulerConfig(this);
         }

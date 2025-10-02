@@ -3,6 +3,7 @@ package com.telcobright.scheduler;
 import com.telcobright.db.repository.ShardingRepository;
 import com.telcobright.db.repository.GenericMultiTableRepository;
 import com.telcobright.db.entity.ShardingEntity;
+import com.telcobright.scheduler.ui.SchedulerUIServer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.quartz.*;
@@ -37,6 +38,7 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
     private SchedulerMonitor monitor;
     private JobHistoryTracker historyTracker;
     private DatabaseStatusUpdater statusUpdater;
+    private SchedulerUIServer uiServer;
     private static final String SCHEDULER_INSTANCE_KEY = "scheduler_instance";
     
     public InfiniteScheduler(Class<TEntity> entityClass,
@@ -77,8 +79,16 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
         
         // Add job listener for monitoring and history tracking
         addJobListener();
-        
-        logger.info("InfiniteScheduler initialized with fetch interval: {}s, lookahead: {}s, cleanup: {}", 
+
+        // Initialize UI server if enabled
+        if (config.isEnableUI()) {
+            this.uiServer = new SchedulerUIServer(quartzScheduler, config.getUiPort());
+            logger.info("UI server initialized on port {}", config.getUiPort());
+        } else {
+            logger.info("UI server disabled");
+        }
+
+        logger.info("InfiniteScheduler initialized with fetch interval: {}s, lookahead: {}s, cleanup: {}",
             config.getFetchIntervalSeconds(), config.getLookaheadWindowSeconds(),
             config.isAutoCleanupCompletedJobs() ? config.getCleanupIntervalMinutes() + "min" : "disabled");
     }
@@ -238,7 +248,12 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
             
             // Start monitor
             monitor.start();
-            
+
+            // Start UI server if enabled
+            if (config.isEnableUI() && uiServer != null) {
+                uiServer.start();
+            }
+
             logger.info("InfiniteScheduler started successfully");
         } else {
             logger.warn("InfiniteScheduler is already running");
@@ -258,9 +273,14 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
             
             // Stop cleanup service
             cleanupService.stop();
-            
+
+            // Stop UI server if running
+            if (uiServer != null && uiServer.isRunning()) {
+                uiServer.stop();
+            }
+
             quartzScheduler.shutdown(true);
-            
+
             logger.info("InfiniteScheduler stopped successfully");
         } else {
             logger.warn("InfiniteScheduler is not running");

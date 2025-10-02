@@ -14,11 +14,11 @@
   - Prevents job accumulation during system downtime
 - **Clustering:** Support for multi-node scheduler clustering for high availability
 
-### 2. **ShardingRepository Integration**
-- **Data Source:** Uses `ShardingRepository<TEntity, TKey>` interface from **partitioned-repo** library
-- **Repository Types:** Support for both:
-  - `GenericMultiTableRepository<T, K>` for high-volume, short-retention data
-  - `GenericPartitionedTableRepository<T, K>` for structured, long-retention data
+### 2. **SplitVerseRepository Integration**
+- **Data Source:** Uses `ShardingRepository<TEntity>` interface from **split-verse** library
+- **Repository Modes:** Support for both:
+  - `RepositoryMode.MULTI_TABLE` - Separate tables per time period for high-volume, short-retention data
+  - `RepositoryMode.PARTITIONED` - Single table with native MySQL partitions for structured, long-retention data
 - **Entity Types:** Generic support for any entity type (SmsEntity, OrderEntity, NotificationEntity, etc.)
 - **Type Safety:** Full compile-time type safety with generic parameters
 
@@ -49,8 +49,8 @@
 
 #### 1. **InfiniteScheduler**
 ```java
-public class InfiniteScheduler<TEntity, TKey> {
-    private final ShardingRepository<TEntity, TKey> repository;
+public class InfiniteScheduler<TEntity> {
+    private final ShardingRepository<TEntity> repository;
     private final Scheduler quartzScheduler;
     private final SchedulerConfig config;
     private final VirtualThread fetcherThread;
@@ -153,24 +153,27 @@ public static final int DEFAULT_MISFIRE_INSTRUCTION =
 
 ### **Basic SMS Scheduling**
 ```java
-// Repository for SMS entities
-ShardingRepository<SmsEntity, Long> smsRepo = 
-    GenericMultiTableRepository.<SmsEntity, Long>builder(SmsEntity.class, Long.class)
-        .database("messaging")
-        .tablePrefix("sms")
-        .build();
-
-// Scheduler configuration
+// Repository for SMS entities (built internally by scheduler)
+// Configuration includes both scheduler and repository settings
 SchedulerConfig config = SchedulerConfig.builder()
-    .fetchInterval(25)        // Fetch every 25 seconds
-    .lookaheadWindow(30)      // Look 30 seconds ahead
-    .quartzDataSource("jdbc:mysql://localhost:3306/scheduler")
-    .maxJobsPerFetch(10000)   // Process up to 10K jobs per fetch
+    .fetchInterval(25)              // Fetch every 25 seconds
+    .lookaheadWindow(30)            // Look 30 seconds ahead
+    .mysqlHost("127.0.0.1")         // MySQL host
+    .mysqlPort(3306)                // MySQL port
+    .mysqlDatabase("messaging")     // Database name
+    .mysqlUsername("root")          // MySQL username
+    .mysqlPassword("password")      // MySQL password
+    .repositoryDatabase("messaging") // Repository database
+    .repositoryTablePrefix("sms")   // Repository table prefix
+    .repositoryMode(RepositoryMode.MULTI_TABLE)  // Use multi-table mode
+    .partitionRange(PartitionRange.DAILY)        // Daily tables
+    .retentionDays(7)              // Keep 7 days of data
+    .maxJobsPerFetch(10000)        // Process up to 10K jobs per fetch
     .build();
 
-// Create infinite scheduler
-InfiniteScheduler<SmsEntity, Long> scheduler = 
-    new InfiniteScheduler<>(smsRepo, config);
+// Create infinite scheduler (repository created internally)
+InfiniteScheduler<SmsEntity> scheduler =
+    new InfiniteScheduler<>(SmsEntity.class, config, SmsJob.class);
 
 scheduler.start();
 ```
@@ -180,12 +183,21 @@ scheduler.start();
 SchedulerConfig productionConfig = SchedulerConfig.builder()
     .fetchInterval(15)                    // More frequent fetching
     .lookaheadWindow(45)                  // Larger lookahead window
-    .quartzDataSource("jdbc:mysql://prod-db:3306/scheduler?useSSL=true")
-    .maxJobsPerFetch(50000)               // Higher throughput
+    .mysqlHost("prod-db.example.com")     // Production MySQL host
+    .mysqlPort(3306)                      // MySQL port
+    .mysqlDatabase("scheduler")           // Database name
+    .mysqlUsername("prod_user")           // MySQL username
+    .mysqlPassword("prod_password")       // MySQL password
+    .repositoryDatabase("scheduler")      // Repository database
+    .repositoryTablePrefix("notifications") // Repository table prefix
+    .repositoryMode(RepositoryMode.PARTITIONED)  // Use partitioned mode
+    .partitionRange(PartitionRange.DAILY)        // Daily partitions
+    .retentionDays(30)                   // Keep 30 days of data
+    .maxJobsPerFetch(50000)              // Higher throughput
     .misfireInstruction(MISFIRE_INSTRUCTION_FIRE_ONCE_NOW)
-    .clusteringEnabled(true)              // Enable clustering
-    .threadPoolSize(20)                   // Quartz thread pool
-    .batchSize(1000)                      // Batch job creation
+    .clusteringEnabled(true)             // Enable clustering
+    .threadPoolSize(20)                  // Quartz thread pool
+    .batchSize(1000)                     // Batch job creation
     .build();
 ```
 
@@ -206,30 +218,46 @@ SchedulerConfig productionConfig = SchedulerConfig.builder()
 
 ## Integration Points
 
-### **With partitioned-repo Library**
-- Import as Maven dependency: `com.telcobright:partitioned-repo:1.0.0`
+### **With split-verse Library**
+- Import as Maven dependency: `com.telcobright:split-verse:1.0.0`
 - Use ShardingRepository interface for all data operations
 - Leverage automatic table/partition management
 - Benefit from HikariCP connection pooling
+- Choose between MULTI_TABLE and PARTITIONED modes
 
 ### **Entity Requirements**
 ```java
 @Table(name = "sms_schedules")
-public class SmsScheduleEntity {
-    @Id
+public class SmsScheduleEntity implements ShardingEntity {
+    @Id(autoGenerated = false)
     @Column(name = "id")
-    private Long id;
-    
+    private String id;
+
     @ShardingKey  // Required for partitioning
     @Column(name = "scheduled_time")
     private LocalDateTime scheduledTime;
-    
+
     @Column(name = "phone_number")
     private String phoneNumber;
-    
+
     @Column(name = "message")
     private String message;
-    
+
+    // Required by ShardingEntity interface
+    @Override
+    public String getId() { return id; }
+
+    @Override
+    public void setId(String id) { this.id = id; }
+
+    @Override
+    public LocalDateTime getCreatedAt() { return scheduledTime; }
+
+    @Override
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.scheduledTime = createdAt;
+    }
+
     // ... other fields
 }
 ```
@@ -280,7 +308,7 @@ public class SmsScheduleEntity {
 - **Quartz Scheduler:** `org.quartz-scheduler:quartz:2.3.2`
 - **MySQL Connector:** `mysql:mysql-connector-java:8.0.33`
 - **HikariCP:** `com.zaxxer:HikariCP:5.0.1`
-- **partitioned-repo:** `com.telcobright:partitioned-repo:1.0.0` (local)
+- **split-verse:** `com.telcobright:split-verse:1.0.0`
 
 ### **Java Requirements**
 - **Java Version:** 21+ (for Virtual Threads)
@@ -289,4 +317,4 @@ public class SmsScheduleEntity {
 
 ---
 
-**Note:** This project will be created as a sibling to the partitioned-repo project and will heavily integrate with its ShardingRepository interface for optimal performance and automatic data lifecycle management.
+**Note:** This project integrates with the split-verse library and uses its ShardingRepository interface for optimal performance and automatic data lifecycle management. Split-verse provides flexible repository modes (MULTI_TABLE and PARTITIONED) for different use cases.
