@@ -49,7 +49,7 @@
             <version>${quartz.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.telcobright</groupId>
+            <groupId>com.telcobright.db</groupId>
             <artifactId>split-verse</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -116,6 +116,12 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.10.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -123,7 +129,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version>
                 <configuration>
+                    <release>21</release>
                     <compilerArgs>
                         <arg>--enable-preview</arg>
                     </compilerArgs>

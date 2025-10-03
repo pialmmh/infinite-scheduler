@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinite Scheduler - Job Monitor</title>
+    <title>Infinite Scheduler</title>
     <style>
         * {
             margin: 0;
@@ -12,511 +12,644 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
             color: #333;
-            line-height: 1.6;
+            line-height: 1.4;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 14px;
-        }
-
-        .controls {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .filter-group {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-group label {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .filter-group input,
-        .filter-group select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            min-width: 150px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2980b9;
-        }
-
-        .btn-success {
-            background: #27ae60;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #229954;
-        }
-
-        .btn-warning {
-            background: #f39c12;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #e67e22;
-        }
-
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
-        .btn-sm {
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #7f8c8d;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .jobs-table-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 100vh;
             overflow: hidden;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        /* Left summary column - narrow */
+        .summary-column {
+            width: 220px;
+            background: #fff;
+            border-right: 1px solid #ddd;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        th {
-            background: #34495e;
+        .summary-box {
+            background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
             color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: 500;
-            font-size: 14px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ecf0f1;
-            font-size: 13px;
+        .summary-box:nth-child(2) {
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
         }
 
-        tr:hover {
-            background: #f8f9fa;
+        .summary-box:nth-child(3) {
+            background: linear-gradient(135deg, #66bb6a 0%, #388e3c 100%);
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
+        .summary-value {
+            margin-top: 8px;
+        }
+
+        .summary-value .count {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .summary-value .label {
+            font-size: 10px;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .summary-box h3 {
             font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+
+        /* Middle and right panes - wide */
+        .jobs-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            margin: 10px 5px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .pane-header {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .job-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        /* Two-column job card layout */
+        .job-item {
+            background: #f8f9fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+        }
+
+        .job-left {
+            border-right: 1px solid #e1e4e8;
+            padding-right: 15px;
+        }
+
+        .job-right {
+            position: relative;
+        }
+
+        .job-item .job-id {
+            font-weight: 600;
+            color: #0366d6;
+            margin-bottom: 8px;
+            font-size: 11px;
+            word-break: break-all;
+        }
+
+        .job-item .job-param {
+            margin: 4px 0;
+            color: #586069;
+            font-size: 11px;
+        }
+
+        .job-item .job-param strong {
+            color: #24292e;
+            min-width: 90px;
+            display: inline-block;
+            font-size: 10px;
+        }
+
+        .job-item .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
         }
 
-        .status-normal { background: #d4edda; color: #155724; }
-        .status-paused { background: #fff3cd; color: #856404; }
-        .status-blocked { background: #f8d7da; color: #721c24; }
-        .status-error { background: #f8d7da; color: #721c24; }
-        .status-complete { background: #d1ecf1; color: #0c5460; }
+        .status.completed { background: #d4edda; color: #155724; }
+        .status.failed { background: #f8d7da; color: #721c24; }
+        .status.normal { background: #cce5ff; color: #004085; }
+        .status.started { background: #fff3cd; color: #856404; }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
+        .view-details-btn {
+            margin-left: 8px;
+            padding: 4px 10px;
+            background: #0366d6;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 500;
+            display: inline-block;
+            vertical-align: middle;
         }
 
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+        .view-details-btn:hover {
+            background: #0256c7;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .last-param {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .pagination {
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #ecf0f1;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e1e4e8;
+            padding-bottom: 10px;
         }
 
-        .pagination-info {
-            font-size: 14px;
-            color: #7f8c8d;
+        .modal-header h2 {
+            font-size: 18px;
+            color: #2c3e50;
         }
 
-        .pagination-controls {
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+
+        .modal-param {
+            margin: 8px 0;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .modal-param strong {
+            color: #0366d6;
+            display: inline-block;
+            min-width: 150px;
+        }
+
+        .pagination {
+            padding: 12px 15px;
+            border-top: 1px solid #e1e4e8;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-        }
-
-        .refresh-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            background: #3498db;
+        .pagination button {
+            padding: 6px 14px;
+            background: #0366d6;
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 4px;
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .pagination button:hover {
+            background: #0256c7;
+        }
+
+        .pagination button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            font-size: 12px;
+            color: #586069;
+        }
+
+        .no-jobs {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .param-count-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
             font-weight: 600;
-        }
-
-        .refresh-btn:hover {
-            background: #2980b9;
-        }
-
-        .message-preview {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>📅 Infinite Scheduler</h1>
-            <p class="subtitle">Real-time job monitoring and management</p>
-        </header>
-
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-label">Total Jobs</div>
-                <div class="stat-value" id="totalJobs">-</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Running</div>
-                <div class="stat-value" id="runningJobs">-</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Scheduled</div>
-                <div class="stat-value" id="scheduledJobs">-</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Paused</div>
-                <div class="stat-value" id="pausedJobs">-</div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <div class="filter-group">
-                <label>
-                    Entity ID
-                    <input type="text" id="filterEntityId" placeholder="Filter by entity ID">
-                </label>
-                <label>
-                    Phone Number
-                    <input type="text" id="filterPhone" placeholder="Filter by phone">
-                </label>
-                <label>
-                    Status
-                    <select id="filterStatus">
-                        <option value="">All</option>
-                        <option value="NORMAL">Normal</option>
-                        <option value="PAUSED">Paused</option>
-                        <option value="BLOCKED">Blocked</option>
-                        <option value="ERROR">Error</option>
-                        <option value="COMPLETE">Complete</option>
-                    </select>
-                </label>
-                <button class="btn btn-primary" onclick="applyFilters()">🔍 Filter</button>
-                <button class="btn btn-success" onclick="clearFilters()">✖ Clear</button>
-            </div>
-        </div>
-
-        <div class="jobs-table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Entity ID</th>
-                        <th>Phone Number</th>
-                        <th>Scheduled Time</th>
-                        <th>Next Fire Time</th>
-                        <th>Status</th>
-                        <th>Message</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="jobsTableBody">
-                    <tr>
-                        <td colspan="7" class="loading">
-                            <div class="spinner"></div>
-                            Loading jobs...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="pagination">
-                <div class="pagination-info" id="paginationInfo">-</div>
-                <div class="pagination-controls">
-                    <button class="btn btn-primary btn-sm" onclick="previousPage()">← Previous</button>
-                    <button class="btn btn-primary btn-sm" onclick="nextPage()">Next →</button>
+        <!-- Left Summary Column -->
+        <div class="summary-column">
+            <div class="summary-box">
+                <h3>Next 1 Hour</h3>
+                <div class="summary-value">
+                    <div class="count" id="scheduledCount">-</div>
+                    <div class="label">Scheduled</div>
                 </div>
+            </div>
+            <div class="summary-box">
+                <h3>Last 1 Hour</h3>
+                <div class="summary-value">
+                    <div class="count" id="completedCount">-</div>
+                    <div class="label">Completed</div>
+                </div>
+            </div>
+            <div class="summary-box">
+                <h3>All Time</h3>
+                <div class="summary-value">
+                    <div class="count" id="totalExecuted">-</div>
+                    <div class="label">Executed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Pane - Scheduled Jobs -->
+        <div class="jobs-pane">
+            <div class="pane-header">Scheduled Jobs</div>
+            <div class="job-list" id="scheduledJobsList"></div>
+            <div class="pagination">
+                <button onclick="prevScheduled()" id="prevScheduledBtn">← Previous</button>
+                <span class="page-info" id="scheduledPageInfo">Page 1</span>
+                <button onclick="nextScheduled()" id="nextScheduledBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- Right Pane - History -->
+        <div class="jobs-pane">
+            <div class="pane-header">Execution History</div>
+            <div class="job-list" id="historyJobsList"></div>
+            <div class="pagination">
+                <button onclick="prevHistory()" id="prevHistoryBtn">← Previous</button>
+                <span class="page-info" id="historyPageInfo">Page 1</span>
+                <button onclick="nextHistory()" id="nextHistoryBtn">Next →</button>
             </div>
         </div>
     </div>
 
-    <button class="refresh-btn" onclick="loadJobs()">🔄 Refresh</button>
+    <!-- Modal for job details -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Job Details</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
 
     <script>
-        const API_BASE = '/api';
-        let currentPage = 0;
-        const pageSize = 50;
-        let totalJobs = 0;
+        let scheduledPage = 0;
+        let historyPage = 0;
+        const pageSize = 20;
+        const maxParamsPreview = 10;
 
-        async function loadJobs() {
-            const entityId = document.getElementById('filterEntityId').value;
-            const phone = document.getElementById('filterPhone').value;
-            const status = document.getElementById('filterStatus').value;
+        // Format date as 'YYYY-MM-DD HH:mm:ss'
+        function formatDateTime(dateValue) {
+            if (!dateValue) return '';
+            const date = new Date(dateValue);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
 
-            const params = new URLSearchParams({
-                offset: currentPage * pageSize,
-                limit: pageSize
-            });
+        // Show modal with all job details
+        function showJobDetails(jobData) {
+            const modal = document.getElementById('jobModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
 
-            if (entityId) params.append('entityId', entityId);
-            if (phone) params.append('phoneNumber', phone);
-            if (status) params.append('status', status);
+            modalTitle.textContent = `Job Details: ${jobData.jobName}`;
 
+            let html = '';
+
+            // Add all job data
+            if (jobData.additionalData) {
+                const entries = Object.entries(jobData.additionalData);
+                entries.forEach(([key, value]) => {
+                    if (value !== null && value !== undefined) {
+                        const displayValue = (key.toLowerCase().includes('time') || key.toLowerCase().includes('date'))
+                            ? formatDateTime(value)
+                            : value;
+                        html += `<div class="modal-param"><strong>${key}:</strong> ${displayValue}</div>`;
+                    }
+                });
+            }
+
+            // Add execution info for history jobs
+            if (jobData.completedAt) {
+                html += `<div class="modal-param"><strong>Completed At:</strong> ${formatDateTime(jobData.completedAt)}</div>`;
+            }
+            if (jobData.executionDurationMs !== undefined) {
+                html += `<div class="modal-param"><strong>Execution Duration:</strong> ${jobData.executionDurationMs}ms</div>`;
+            }
+            if (jobData.errorMessage) {
+                html += `<div class="modal-param" style="background: #f8d7da;"><strong>Error:</strong> ${jobData.errorMessage}</div>`;
+            }
+
+            modalBody.innerHTML = html;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('jobModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('jobModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Load summary
+        async function loadSummary() {
             try {
-                const response = await fetch(`${API_BASE}/jobs?${params}`);
+                const response = await fetch('/api/summary');
+                const data = await response.json();
+                document.getElementById('scheduledCount').textContent = data.scheduledNext1Hour;
+                document.getElementById('completedCount').textContent = data.completedLast1Hour;
+                document.getElementById('totalExecuted').textContent = data.totalExecuted;
+            } catch (error) {
+                console.error('Error loading summary:', error);
+            }
+        }
+
+        // Load scheduled jobs
+        async function loadScheduledJobs() {
+            try {
+                const offset = scheduledPage * pageSize;
+                const response = await fetch(`/api/jobs?limit=${pageSize}&offset=${offset}`);
                 const data = await response.json();
 
-                totalJobs = data.total;
-                renderJobs(data.jobs);
-                updatePagination(data.offset, data.count, data.total);
-                await loadStats();
+                const container = document.getElementById('scheduledJobsList');
+                if (data.jobs.length === 0) {
+                    container.innerHTML = '<div class="no-jobs">No scheduled jobs</div>';
+                } else {
+                    container.innerHTML = data.jobs.map(job => {
+                        let leftCol = `<div class="job-id">${job.jobName}</div>`;
+
+                        // Add status
+                        leftCol += `<div class="job-param"><strong>Status:</strong> <span class="status ${job.triggerState?.toLowerCase()}">${job.triggerState || 'UNKNOWN'}</span></div>`;
+
+                        // Add next fire time
+                        if (job.nextFireTime) {
+                            leftCol += `<div class="job-param"><strong>Next Fire:</strong> ${formatDateTime(job.nextFireTime)}</div>`;
+                        }
+
+                        let rightCol = '';
+                        let totalParams = 0;
+                        let viewDetailsBtn = '';
+
+                        // Display first 10 params
+                        if (job.additionalData) {
+                            const entries = Object.entries(job.additionalData);
+                            totalParams = entries.length;
+                            const previewEntries = entries.slice(0, maxParamsPreview);
+
+                            let displayedCount = 0;
+                            previewEntries.forEach(([key, value], index) => {
+                                if (value !== null && value !== undefined && key !== 'status') {
+                                    const displayValue = (key.toLowerCase().includes('time') || key.toLowerCase().includes('date'))
+                                        ? formatDateTime(value)
+                                        : value;
+
+                                    // Check if this is the last param to be displayed
+                                    const isLast = displayedCount === Math.min(maxParamsPreview - 1, previewEntries.filter(([k]) => k !== 'status').length - 1);
+                                    displayedCount++;
+
+                                    if (isLast && totalParams > 0) {
+                                        // Prepare button HTML
+                                        if (totalParams > maxParamsPreview) {
+                                            viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All <span class="param-count-badge">+${totalParams - maxParamsPreview}</span></button>`;
+                                        } else {
+                                            viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All</button>`;
+                                        }
+                                        rightCol += `<div class="job-param last-param"><span><strong>${key}:</strong> ${displayValue}</span>${viewDetailsBtn}</div>`;
+                                    } else {
+                                        rightCol += `<div class="job-param"><strong>${key}:</strong> ${displayValue}</div>`;
+                                    }
+                                }
+                            });
+                        }
+
+                        return `<div class="job-item">
+                            <div class="job-left">${leftCol}</div>
+                            <div class="job-right">${rightCol}</div>
+                        </div>`;
+                    }).join('');
+                }
+
+                document.getElementById('prevScheduledBtn').disabled = scheduledPage === 0;
+                document.getElementById('nextScheduledBtn').disabled = data.jobs.length < pageSize;
+                document.getElementById('scheduledPageInfo').textContent = `Page ${scheduledPage + 1}`;
             } catch (error) {
-                console.error('Error loading jobs:', error);
-                showError();
+                console.error('Error loading scheduled jobs:', error);
             }
         }
 
-        async function loadStats() {
+        // Load history
+        async function loadHistory() {
             try {
-                const response = await fetch(`${API_BASE}/stats`);
-                const stats = await response.json();
+                const offset = historyPage * pageSize;
+                const response = await fetch(`/api/history?limit=${pageSize}&offset=${offset}`);
+                const data = await response.json();
 
-                document.getElementById('totalJobs').textContent = stats.totalJobs || 0;
-                document.getElementById('runningJobs').textContent = stats.currentlyExecuting || 0;
-                document.getElementById('scheduledJobs').textContent = stats.jobsByState?.NORMAL || 0;
-                document.getElementById('pausedJobs').textContent = stats.jobsByState?.PAUSED || 0;
+                const container = document.getElementById('historyJobsList');
+                if (data.jobs.length === 0) {
+                    container.innerHTML = '<div class="no-jobs">No execution history</div>';
+                } else {
+                    container.innerHTML = data.jobs.map(job => {
+                        let leftCol = `<div class="job-id">${job.jobName}</div>`;
+
+                        // Add status
+                        leftCol += `<div class="job-param"><strong>Status:</strong> <span class="status ${job.status?.toLowerCase()}">${job.status || 'UNKNOWN'}</span></div>`;
+
+                        // Add completion time
+                        if (job.completedAt) {
+                            leftCol += `<div class="job-param"><strong>Completed:</strong> ${formatDateTime(job.completedAt)}</div>`;
+                        }
+
+                        // Add duration
+                        if (job.executionDurationMs !== undefined) {
+                            leftCol += `<div class="job-param"><strong>Duration:</strong> ${job.executionDurationMs}ms</div>`;
+                        }
+
+                        let rightCol = '';
+                        let totalParams = 0;
+                        let viewDetailsBtn = '';
+
+                        // Display first 10 params
+                        if (job.additionalData) {
+                            const entries = Object.entries(job.additionalData);
+                            totalParams = entries.length;
+                            const previewEntries = entries.slice(0, maxParamsPreview);
+
+                            let displayedCount = 0;
+                            previewEntries.forEach(([key, value], index) => {
+                                if (value !== null && value !== undefined && key !== 'status') {
+                                    const displayValue = (key.toLowerCase().includes('time') || key.toLowerCase().includes('date'))
+                                        ? formatDateTime(value)
+                                        : value;
+
+                                    // Check if this is the last param (and no error message)
+                                    const nonStatusEntries = previewEntries.filter(([k]) => k !== 'status');
+                                    const isLast = displayedCount === nonStatusEntries.length - 1 && !job.errorMessage;
+                                    displayedCount++;
+
+                                    if (isLast && totalParams > 0) {
+                                        // Prepare button HTML
+                                        if (totalParams > maxParamsPreview) {
+                                            viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All <span class="param-count-badge">+${totalParams - maxParamsPreview}</span></button>`;
+                                        } else {
+                                            viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All</button>`;
+                                        }
+                                        rightCol += `<div class="job-param last-param"><span><strong>${key}:</strong> ${displayValue}</span>${viewDetailsBtn}</div>`;
+                                    } else {
+                                        rightCol += `<div class="job-param"><strong>${key}:</strong> ${displayValue}</div>`;
+                                    }
+                                }
+                            });
+                        }
+
+                        // Add error message if present (with button inline if it's the only/last item)
+                        if (job.errorMessage) {
+                            if (totalParams > 0) {
+                                // Prepare button if not already added
+                                if (!viewDetailsBtn) {
+                                    if (totalParams > maxParamsPreview) {
+                                        viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All <span class="param-count-badge">+${totalParams - maxParamsPreview}</span></button>`;
+                                    } else {
+                                        viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All</button>`;
+                                    }
+                                }
+                                rightCol += `<div class="job-param last-param" style="color: #c00;"><span><strong>Error:</strong> ${job.errorMessage}</span>${viewDetailsBtn}</div>`;
+                            } else {
+                                rightCol += `<div class="job-param" style="color: #c00;"><strong>Error:</strong> ${job.errorMessage}</div>`;
+                            }
+                        }
+
+                        return `<div class="job-item">
+                            <div class="job-left">${leftCol}</div>
+                            <div class="job-right">${rightCol}</div>
+                        </div>`;
+                    }).join('');
+                }
+
+                document.getElementById('prevHistoryBtn').disabled = historyPage === 0;
+                document.getElementById('nextHistoryBtn').disabled = data.jobs.length < pageSize;
+                document.getElementById('historyPageInfo').textContent = `Page ${historyPage + 1}`;
             } catch (error) {
-                console.error('Error loading stats:', error);
+                console.error('Error loading history:', error);
             }
         }
 
-        function renderJobs(jobs) {
-            const tbody = document.getElementById('jobsTableBody');
-
-            if (jobs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="no-data">No jobs found</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = jobs.map(job => `
-                <tr>
-                    <td>${job.entityId || '-'}</td>
-                    <td>${job.phoneNumber || '-'}</td>
-                    <td>${formatDateTime(job.scheduledTime)}</td>
-                    <td>${formatDateTime(job.nextFireTime)}</td>
-                    <td><span class="status-badge status-${(job.triggerState || 'normal').toLowerCase()}">${job.triggerState || '-'}</span></td>
-                    <td><div class="message-preview" title="${job.message || ''}">${job.message || '-'}</div></td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="pauseJob('${job.jobGroup}', '${job.jobName}')">⏸</button>
-                        <button class="btn btn-success btn-sm" onclick="resumeJob('${job.jobGroup}', '${job.jobName}')">▶</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.jobGroup}', '${job.jobName}')">🗑</button>
-                    </td>
-                </tr>
-            `).join('');
+        function nextScheduled() {
+            scheduledPage++;
+            loadScheduledJobs();
         }
 
-        function updatePagination(offset, count, total) {
-            const info = document.getElementById('paginationInfo');
-            const start = offset + 1;
-            const end = offset + count;
-            info.textContent = `Showing ${start}-${end} of ${total} jobs`;
-        }
-
-        function formatDateTime(dateStr) {
-            if (!dateStr) return '-';
-            const date = new Date(dateStr);
-            return date.toLocaleString();
-        }
-
-        async function pauseJob(group, name) {
-            if (!confirm('Pause this job?')) return;
-
-            try {
-                const response = await fetch(`${API_BASE}/job/${group}/${name}/pause`, { method: 'POST' });
-                const result = await response.json();
-                alert(result.message);
-                loadJobs();
-            } catch (error) {
-                alert('Error pausing job');
+        function prevScheduled() {
+            if (scheduledPage > 0) {
+                scheduledPage--;
+                loadScheduledJobs();
             }
         }
 
-        async function resumeJob(group, name) {
-            try {
-                const response = await fetch(`${API_BASE}/job/${group}/${name}/resume`, { method: 'POST' });
-                const result = await response.json();
-                alert(result.message);
-                loadJobs();
-            } catch (error) {
-                alert('Error resuming job');
+        function nextHistory() {
+            historyPage++;
+            loadHistory();
+        }
+
+        function prevHistory() {
+            if (historyPage > 0) {
+                historyPage--;
+                loadHistory();
             }
         }
-
-        async function deleteJob(group, name) {
-            if (!confirm('Delete this job? This action cannot be undone.')) return;
-
-            try {
-                const response = await fetch(`${API_BASE}/job/${group}/${name}`, { method: 'DELETE' });
-                const result = await response.json();
-                alert(result.message);
-                loadJobs();
-            } catch (error) {
-                alert('Error deleting job');
-            }
-        }
-
-        function applyFilters() {
-            currentPage = 0;
-            loadJobs();
-        }
-
-        function clearFilters() {
-            document.getElementById('filterEntityId').value = '';
-            document.getElementById('filterPhone').value = '';
-            document.getElementById('filterStatus').value = '';
-            currentPage = 0;
-            loadJobs();
-        }
-
-        function previousPage() {
-            if (currentPage > 0) {
-                currentPage--;
-                loadJobs();
-            }
-        }
-
-        function nextPage() {
-            if ((currentPage + 1) * pageSize < totalJobs) {
-                currentPage++;
-                loadJobs();
-            }
-        }
-
-        function showError() {
-            const tbody = document.getElementById('jobsTableBody');
-            tbody.innerHTML = '<tr><td colspan="7" class="no-data">Error loading jobs. Please try again.</td></tr>';
-        }
-
-        // Auto-refresh every 30 seconds
-        setInterval(loadJobs, 30000);
 
         // Initial load
-        loadJobs();
+        loadSummary();
+        loadScheduledJobs();
+        loadHistory();
+
+        // Auto-refresh every 5 seconds
+        setInterval(() => {
+            loadSummary();
+            loadScheduledJobs();
+            loadHistory();
+        }, 5000);
     </script>
 </body>
 </html>

@@ -25,9 +25,11 @@ public class JobApiServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(JobApiServlet.class);
     private final Scheduler scheduler;
     private final ObjectMapper objectMapper;
+    private final javax.sql.DataSource dataSource;
 
-    public JobApiServlet(Scheduler scheduler) {
+    public JobApiServlet(Scheduler scheduler, javax.sql.DataSource dataSource) {
         this.scheduler = scheduler;
+        this.dataSource = dataSource;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -50,6 +52,10 @@ public class JobApiServlet extends HttpServlet {
                 handleGetExecutingJobs(req, resp);
             } else if (pathInfo.equals("/stats")) {
                 handleGetStats(req, resp);
+            } else if (pathInfo.equals("/summary")) {
+                handleGetSummary(req, resp);
+            } else if (pathInfo.equals("/history")) {
+                handleGetHistory(req, resp);
             } else {
                 sendError(resp, 404, "Endpoint not found: " + pathInfo);
             }
@@ -317,6 +323,140 @@ public class JobApiServlet extends HttpServlet {
         sendJson(resp, response);
     }
 
+    private void handleGetSummary(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Map<String, Object> summary = new HashMap<>();
+
+        // Get scheduled jobs count for next 1 hour
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime oneHourFromNow = now.plusHours(1);
+
+        List<ScheduledJobInfo> allJobs = getAllScheduledJobs();
+        long scheduledNext1Hour = allJobs.stream()
+                .filter(job -> job.getScheduledTime() != null)
+                .filter(job -> !job.getScheduledTime().isBefore(now) && job.getScheduledTime().isBefore(oneHourFromNow))
+                .count();
+
+        // Get completed jobs count in last 1 hour
+        LocalDateTime oneHourAgo = now.minusHours(1);
+        long completedLast1Hour = getCompletedJobsCount(oneHourAgo, now);
+
+        // Get total jobs executed
+        SchedulerMetaData metaData = scheduler.getMetaData();
+        long totalExecuted = metaData.getNumberOfJobsExecuted();
+
+        summary.put("scheduledNext1Hour", scheduledNext1Hour);
+        summary.put("completedLast1Hour", completedLast1Hour);
+        summary.put("totalExecuted", totalExecuted);
+
+        sendJson(resp, summary);
+    }
+
+    private void handleGetHistory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        int limit = getIntParameter(req, "limit", 20);
+        int offset = getIntParameter(req, "offset", 0);
+
+        List<Map<String, Object>> history = getJobHistory(offset, limit);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("offset", offset);
+        response.put("limit", limit);
+        response.put("count", history.size());
+        response.put("jobs", history);
+
+        sendJson(resp, response);
+    }
+
+    private long getCompletedJobsCount(LocalDateTime from, LocalDateTime to) throws Exception {
+        String sql = """
+            SELECT COUNT(*) as count
+            FROM job_execution_history
+            WHERE status IN ('COMPLETED', 'FAILED')
+            AND completed_at >= ? AND completed_at < ?
+            """;
+
+        try (java.sql.Connection conn = dataSource.getConnection();
+             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setTimestamp(1, java.sql.Timestamp.valueOf(from));
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(to));
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("count");
+                }
+            }
+        }
+        return 0;
+    }
+
+    private List<Map<String, Object>> getJobHistory(int offset, int limit) throws Exception {
+        String sql = """
+            SELECT job_id, job_name, job_group, entity_id, job_data, scheduled_time,
+                   started_at, completed_at, status, error_message, execution_duration_ms
+            FROM job_execution_history
+            ORDER BY COALESCE(completed_at, started_at, created_at) DESC, id DESC
+            LIMIT ? OFFSET ?
+            """;
+
+        List<Map<String, Object>> history = new ArrayList<>();
+
+        try (java.sql.Connection conn = dataSource.getConnection();
+             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, limit);
+            stmt.setInt(2, offset);
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> job = new HashMap<>();
+                    job.put("jobId", rs.getString("job_id"));
+                    job.put("jobName", rs.getString("job_name"));
+                    job.put("jobGroup", rs.getString("job_group"));
+                    job.put("entityId", rs.getString("entity_id"));
+
+                    // Deserialize job_data JSON
+                    String jobDataJson = rs.getString("job_data");
+                    if (jobDataJson != null && !jobDataJson.isEmpty()) {
+                        try {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> jobData = objectMapper.readValue(jobDataJson, Map.class);
+                            job.put("additionalData", jobData);
+                        } catch (Exception e) {
+                            logger.error("Failed to deserialize job_data JSON", e);
+                        }
+                    }
+
+                    java.sql.Timestamp scheduledTime = rs.getTimestamp("scheduled_time");
+                    if (scheduledTime != null) {
+                        job.put("scheduledTime", scheduledTime.toLocalDateTime());
+                    }
+
+                    java.sql.Timestamp startedAt = rs.getTimestamp("started_at");
+                    if (startedAt != null) {
+                        job.put("startedAt", startedAt.toLocalDateTime());
+                    }
+
+                    java.sql.Timestamp completedAt = rs.getTimestamp("completed_at");
+                    if (completedAt != null) {
+                        job.put("completedAt", completedAt.toLocalDateTime());
+                    }
+
+                    job.put("status", rs.getString("status"));
+                    job.put("errorMessage", rs.getString("error_message"));
+
+                    Long durationMs = rs.getLong("execution_duration_ms");
+                    if (!rs.wasNull()) {
+                        job.put("executionDurationMs", durationMs);
+                    }
+
+                    history.add(job);
+                }
+            }
+        }
+
+        return history;
+    }
+
     // Helper methods
     private List<ScheduledJobInfo> getAllScheduledJobs() throws SchedulerException {
         List<ScheduledJobInfo> jobInfoList = new ArrayList<>();
@@ -359,6 +499,13 @@ public class JobApiServlet extends HttpServlet {
         if (scheduledTimeStr != null) {
             info.setScheduledTime(LocalDateTime.parse(scheduledTimeStr));
         }
+
+        // Collect all job data for dynamic display
+        Map<String, Object> additionalData = new java.util.HashMap<>();
+        for (String key : dataMap.getKeys()) {
+            additionalData.put(key, dataMap.get(key));
+        }
+        info.setAdditionalData(additionalData);
 
         // Trigger details
         if (trigger != null) {

@@ -1,19 +1,23 @@
 package com.telcobright.scheduler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public class JobHistoryTracker {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(JobHistoryTracker.class);
     private final DataSource dataSource;
-    
+    private final ObjectMapper objectMapper;
+
     public JobHistoryTracker(DataSource dataSource) {
         this.dataSource = dataSource;
+        this.objectMapper = new ObjectMapper();
         createHistoryTableIfNotExists();
     }
     
@@ -25,6 +29,7 @@ public class JobHistoryTracker {
                 job_name VARCHAR(255) NOT NULL,
                 job_group VARCHAR(255) NOT NULL,
                 entity_id VARCHAR(255),
+                job_data JSON,
                 scheduled_time DATETIME,
                 started_at DATETIME,
                 completed_at DATETIME,
@@ -38,39 +43,63 @@ public class JobHistoryTracker {
                 INDEX idx_scheduled_time (scheduled_time)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             """;
-        
+
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
-            
+
             stmt.execute(createTableSQL);
             logger.info("Job history table ensured to exist");
-            
+
+            // Add job_data column if it doesn't exist (for existing tables)
+            String alterTableSQL = """
+                ALTER TABLE job_execution_history
+                ADD COLUMN IF NOT EXISTS job_data JSON AFTER entity_id
+                """;
+            try {
+                stmt.execute(alterTableSQL);
+            } catch (SQLException e) {
+                // Ignore if column already exists
+                logger.debug("job_data column may already exist: {}", e.getMessage());
+            }
+
         } catch (SQLException e) {
             logger.error("Failed to create job history table", e);
             throw new RuntimeException("Failed to create job history table", e);
         }
     }
     
-    public void recordJobScheduled(String jobId, String jobName, String jobGroup, 
-                                 String entityId, LocalDateTime scheduledTime) {
+    public void recordJobScheduled(String jobId, String jobName, String jobGroup,
+                                 String entityId, LocalDateTime scheduledTime, Map<String, Object> jobData) {
         String sql = """
-            INSERT INTO job_execution_history 
-            (job_id, job_name, job_group, entity_id, scheduled_time, status) 
-            VALUES (?, ?, ?, ?, ?, 'SCHEDULED')
+            INSERT INTO job_execution_history
+            (job_id, job_name, job_group, entity_id, job_data, scheduled_time, status)
+            VALUES (?, ?, ?, ?, ?, ?, 'SCHEDULED')
             """;
-        
+
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setString(1, jobId);
             stmt.setString(2, jobName);
             stmt.setString(3, jobGroup);
             stmt.setString(4, entityId);
-            stmt.setTimestamp(5, Timestamp.valueOf(scheduledTime));
-            
+
+            // Serialize job data to JSON
+            String jobDataJson = null;
+            if (jobData != null && !jobData.isEmpty()) {
+                try {
+                    jobDataJson = objectMapper.writeValueAsString(jobData);
+                } catch (Exception e) {
+                    logger.error("Failed to serialize job data to JSON", e);
+                }
+            }
+            stmt.setString(5, jobDataJson);
+
+            stmt.setTimestamp(6, Timestamp.valueOf(scheduledTime));
+
             stmt.executeUpdate();
             logger.debug("Recorded job scheduled: {}", jobId);
-            
+
         } catch (SQLException e) {
             logger.error("Failed to record job scheduled: {}", jobId, e);
         }

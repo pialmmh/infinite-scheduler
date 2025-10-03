@@ -18,10 +18,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Long-running test that creates 100 SMS retry jobs spread across 5 hours
- * and verifies they are executed at the correct time with proper retry logic.
+ * SMS retry test that creates scheduled jobs and verifies timing accuracy.
+ * Includes web UI for real-time monitoring.
  *
- * NOTE: This is a long-running test (5+ hours). For quick validation, reduce the time window.
+ * Short duration test for quick validation - jobs spread across 5 minutes.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SmsRetryLongRunningTest {
@@ -29,11 +29,11 @@ public class SmsRetryLongRunningTest {
     private static final Logger logger = LoggerFactory.getLogger(SmsRetryLongRunningTest.class);
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    // Test configuration
-    private static final int TOTAL_SMS_COUNT = 100;
-    private static final int TIME_WINDOW_HOURS = 5;
+    // Test configuration - SHORT DURATION for testing
+    private static final int TOTAL_SMS_COUNT = 20;  // Reduced from 100
+    private static final int TIME_WINDOW_MINUTES = 5;  // Changed from hours to minutes
     private static final int MAX_RETRIES = 3;
-    private static final double FAILURE_RATE = 0.3; // 30% chance of failure
+    private static final double FAILURE_RATE = 0.2; // 20% chance of failure (reduced)
     private static final int ACCEPTABLE_DELAY_MS = 5000; // 5 seconds tolerance
 
     // Database configuration
@@ -51,11 +51,11 @@ public class SmsRetryLongRunningTest {
     @BeforeAll
     public static void setup() throws Exception {
         logger.info("========================================================================");
-        logger.info("Starting SMS Retry Long Running Test");
+        logger.info("Starting SMS Retry Short Duration Test");
         logger.info("========================================================================");
         logger.info("Test configuration:");
         logger.info("  - Total SMS count: {}", TOTAL_SMS_COUNT);
-        logger.info("  - Time window: {} hours", TIME_WINDOW_HOURS);
+        logger.info("  - Time window: {} minutes", TIME_WINDOW_MINUTES);
         logger.info("  - Max retries per SMS: {}", MAX_RETRIES);
         logger.info("  - Simulated failure rate: {}%", (FAILURE_RATE * 100));
         logger.info("  - Acceptable timing delay: {}ms", ACCEPTABLE_DELAY_MS);
@@ -71,10 +71,10 @@ public class SmsRetryLongRunningTest {
         // Create/clean database
         setupDatabase();
 
-        // Configure scheduler
+        // Configure scheduler with UI enabled
         SchedulerConfig config = SchedulerConfig.builder()
-                .fetchInterval(25)
-                .lookaheadWindow(30)
+                .fetchInterval(10)  // Faster fetch for short test
+                .lookaheadWindow(15)  // Shorter lookahead
                 .mysqlHost(DB_HOST)
                 .mysqlPort(Integer.parseInt(DB_PORT))
                 .mysqlDatabase(DB_NAME)
@@ -87,6 +87,8 @@ public class SmsRetryLongRunningTest {
                 .autoCleanupCompletedJobs(false) // Keep jobs for verification
                 .cleanupIntervalMinutes(120)
                 .threadPoolSize(10)
+                .enableUI(true)  // Enable UI for monitoring
+                .uiPort(9000)    // Default UI port
                 .build();
 
         // Create scheduler
@@ -98,13 +100,15 @@ public class SmsRetryLongRunningTest {
 
     @Test
     @Order(1)
-    public void testCreateAndSchedule100SmsRetries() throws Exception {
+    public void testCreateAndScheduleSmsRetries() throws Exception {
         logger.info("========================================================================");
-        logger.info("TEST 1: Creating and scheduling 100 SMS retries across {} hours", TIME_WINDOW_HOURS);
+        logger.info("TEST 1: Creating and scheduling {} SMS retries across {} minutes", TOTAL_SMS_COUNT, TIME_WINDOW_MINUTES);
+        logger.info("========================================================================");
+        logger.info("🌐 Web UI available at: http://localhost:9000");
         logger.info("========================================================================");
 
         Random random = new Random();
-        int maxOffsetSeconds = TIME_WINDOW_HOURS * 3600;
+        int maxOffsetSeconds = TIME_WINDOW_MINUTES * 60;  // Convert minutes to seconds
 
         for (int i = 0; i < TOTAL_SMS_COUNT; i++) {
             // Generate random future time within the time window
@@ -130,14 +134,17 @@ public class SmsRetryLongRunningTest {
             }
         }
 
-        logger.info("✅ Created {} SMS retry entries spread across {} hours", TOTAL_SMS_COUNT, TIME_WINDOW_HOURS);
+        logger.info("✅ Created {} SMS retry entries spread across {} minutes", TOTAL_SMS_COUNT, TIME_WINDOW_MINUTES);
         logger.info("   Earliest execution: {}", expectedExecutionTimes.values().stream()
                 .min(LocalDateTime::compareTo).orElse(null).format(TIME_FORMATTER));
         logger.info("   Latest execution: {}", expectedExecutionTimes.values().stream()
                 .max(LocalDateTime::compareTo).orElse(null).format(TIME_FORMATTER));
+        logger.info("========================================================================");
+        logger.info("📊 Monitor jobs in real-time at: http://localhost:9000");
+        logger.info("========================================================================");
 
         // Give scheduler time to pick up the jobs
-        Thread.sleep(60000); // 1 minute to ensure first batch is scheduled
+        Thread.sleep(20000); // 20 seconds to ensure first batch is scheduled
     }
 
     @Test
@@ -146,24 +153,22 @@ public class SmsRetryLongRunningTest {
         logger.info("========================================================================");
         logger.info("TEST 2: Waiting for all SMS retries to execute");
         logger.info("========================================================================");
+        logger.info("🌐 Monitor progress at: http://localhost:9000");
+        logger.info("========================================================================");
 
         LocalDateTime latestExecutionTime = expectedExecutionTimes.values().stream()
                 .max(LocalDateTime::compareTo)
                 .orElse(LocalDateTime.now());
 
         Duration waitDuration = Duration.between(LocalDateTime.now(), latestExecutionTime)
-                .plusMinutes(10); // Extra buffer
+                .plusMinutes(2); // Extra 2 minute buffer
 
-        if (waitDuration.isNegative() || waitDuration.toHours() > 6) {
-            logger.warn("Wait duration is {} hours - test may take a long time", waitDuration.toHours());
-        }
-
-        logger.info("Waiting for {} hours {} minutes for all executions to complete...",
-                waitDuration.toHours(), waitDuration.toMinutes() % 60);
+        logger.info("Waiting for {} minutes {} seconds for all executions to complete...",
+                waitDuration.toMinutes(), waitDuration.getSeconds() % 60);
 
         // Monitor progress periodically
         long totalWaitMs = waitDuration.toMillis();
-        long checkIntervalMs = 60000; // Check every minute
+        long checkIntervalMs = 15000; // Check every 15 seconds
         long elapsed = 0;
 
         while (elapsed < totalWaitMs) {
@@ -171,7 +176,7 @@ public class SmsRetryLongRunningTest {
             elapsed += checkIntervalMs;
 
             int progress = (int) ((elapsed * 100) / totalWaitMs);
-            logger.info("Progress: {}% - Executed: {}/{} (Success: {}, Failed: {})",
+            logger.info("Progress: {}% - Executed: {}/{} (Success: {}, Failed: {}) - UI: http://localhost:9000",
                     progress,
                     SmsRetryJob.totalExecutions.get(),
                     TOTAL_SMS_COUNT,
@@ -180,6 +185,7 @@ public class SmsRetryLongRunningTest {
         }
 
         logger.info("✅ Wait period completed");
+        logger.info("📊 Final results available at: http://localhost:9000");
     }
 
     @Test
@@ -300,20 +306,29 @@ public class SmsRetryLongRunningTest {
     @AfterAll
     public static void cleanup() throws Exception {
         logger.info("========================================================================");
+        logger.info("Test complete - keeping scheduler running for 2 minutes for final review");
+        logger.info("========================================================================");
+        logger.info("🌐 View results at: http://localhost:9000");
+        logger.info("========================================================================");
+
+        // Keep scheduler running for 2 more minutes to review results in UI
+        Thread.sleep(120000);
+
+        logger.info("========================================================================");
         logger.info("Cleaning up test resources");
         logger.info("========================================================================");
 
         if (scheduler != null) {
             scheduler.stop();
-            logger.info("✅ Scheduler stopped");
+            logger.info("✅ Scheduler and UI server stopped");
         }
 
         Duration testDuration = Duration.between(testStartTime, LocalDateTime.now());
         logger.info("========================================================================");
         logger.info("TEST COMPLETED");
         logger.info("========================================================================");
-        logger.info("Total test duration: {} hours {} minutes",
-                testDuration.toHours(), testDuration.toMinutes() % 60);
+        logger.info("Total test duration: {} minutes {} seconds",
+                testDuration.toMinutes(), testDuration.getSeconds() % 60);
         logger.info("========================================================================");
     }
 

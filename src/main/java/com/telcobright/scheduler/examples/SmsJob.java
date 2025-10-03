@@ -33,17 +33,14 @@ public class SmsJob implements Job {
             
             // Get scheduler instance from context to access repository
             @SuppressWarnings("unchecked")
-            InfiniteScheduler<SmsEntity, Long> scheduler = 
+            InfiniteScheduler<SmsEntity> scheduler =
                 InfiniteScheduler.getFromContext(context.getScheduler().getContext());
-            
-            // Parse entity ID
-            Long entityId = Long.parseLong(entityIdStr);
-            
-            // Get the entity from repository
-            SmsEntity smsEntity = scheduler.getRepository().findById(entityId);
+
+            // Get the entity from repository (entityId is now a String)
+            SmsEntity smsEntity = scheduler.getRepository().findById(entityIdStr);
             
             if (smsEntity == null) {
-                logger.warn("SMS entity not found for ID: {}", entityId);
+                logger.warn("SMS entity not found for ID: {}", entityIdStr);
                 return;
             }
             
@@ -63,8 +60,8 @@ public class SmsJob implements Job {
             // The entity status is updated in-memory for this execution
             
             LocalDateTime completedBD = ZonedDateTime.now(BANGLADESH_TIMEZONE).toLocalDateTime();
-            logger.info("✅ SMS sent successfully at {} BD for ID: {} to {}", 
-                completedBD.format(TIME_FORMATTER), entityId, smsEntity.getPhoneNumber());
+            logger.info("✅ SMS sent successfully at {} BD for ID: {} to {}",
+                completedBD.format(TIME_FORMATTER), entityIdStr, smsEntity.getPhoneNumber());
                 
         } catch (SchedulerException e) {
             logger.error("Failed to get scheduler from context", e);

@@ -1,16 +1,16 @@
 package com.telcobright.scheduler.examples;
 
-import com.telcobright.db.annotation.*;
+import com.telcobright.core.annotation.*;
 import com.telcobright.scheduler.SchedulableEntity;
 
 import java.time.LocalDateTime;
 
 @Table(name = "sms_schedules")
-public class SmsEntity implements SchedulableEntity<Long> {
-    
+public class SmsEntity implements SchedulableEntity {
+
     @Id
     @Column(name = "id")
-    private Long id;
+    private String id;
     
     @ShardingKey
     @Column(name = "scheduled_time")
@@ -29,8 +29,8 @@ public class SmsEntity implements SchedulableEntity<Long> {
     private Boolean scheduled;
     
     public SmsEntity() {}
-    
-    public SmsEntity(Long id, LocalDateTime scheduledTime, String phoneNumber, String message) {
+
+    public SmsEntity(String id, LocalDateTime scheduledTime, String phoneNumber, String message) {
         this.id = id;
         this.scheduledTime = scheduledTime;
         this.phoneNumber = phoneNumber;
@@ -38,23 +38,39 @@ public class SmsEntity implements SchedulableEntity<Long> {
         this.status = "PENDING";
         this.scheduled = false; // Initially not scheduled
     }
-    
+
     @Override
-    public Long getId() {
+    public String getId() {
         return id;
     }
-    
-    public void setId(Long id) {
+
+    @Override
+    public void setId(String id) {
         this.id = id;
     }
     
     @Override
+    public LocalDateTime getPartitionColValue() {
+        return scheduledTime;
+    }
+
+    @Override
+    public void setPartitionColValue(LocalDateTime scheduledTime) {
+        this.scheduledTime = scheduledTime;
+    }
+
+    @Override
     public LocalDateTime getScheduledTime() {
         return scheduledTime;
     }
-    
+
     public void setScheduledTime(LocalDateTime scheduledTime) {
         this.scheduledTime = scheduledTime;
+    }
+
+    @Override
+    public String getPartitionColName() {
+        return "scheduled_time";
     }
     
     public String getPhoneNumber() {

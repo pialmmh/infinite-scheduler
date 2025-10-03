@@ -21,8 +21,8 @@ public class TableCreationTest {
                 .repositoryTablePrefix("sms_test")
                 .build();
             
-            InfiniteScheduler<SmsEntity, Long> scheduler = 
-                new InfiniteScheduler<>(SmsEntity.class, Long.class, config, SmsJob.class);
+            InfiniteScheduler<SmsEntity> scheduler =
+                new InfiniteScheduler<>(SmsEntity.class, config, SmsJob.class);
             
             LocalDateTime now = LocalDateTime.now();
             
@@ -31,7 +31,7 @@ public class TableCreationTest {
             
             // Create and insert a single SMS entity
             SmsEntity smsEntity = new SmsEntity();
-            smsEntity.setId(1L);
+            smsEntity.setId("1");
             smsEntity.setPhoneNumber("+1555123456");
             smsEntity.setMessage("Test message for table creation");
             smsEntity.setStatus("PENDING");

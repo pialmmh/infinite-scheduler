@@ -19,9 +19,11 @@ public class SchedulerUIServer {
     private final Server server;
     private final int port;
     private final Scheduler scheduler;
+    private final javax.sql.DataSource dataSource;
 
-    public SchedulerUIServer(Scheduler scheduler, int port) {
+    public SchedulerUIServer(Scheduler scheduler, javax.sql.DataSource dataSource, int port) {
         this.scheduler = scheduler;
+        this.dataSource = dataSource;
         this.port = port;
         this.server = new Server(port);
         configureServer();
@@ -33,7 +35,7 @@ public class SchedulerUIServer {
             context.setContextPath("/");
 
             // API servlet
-            JobApiServlet apiServlet = new JobApiServlet(scheduler);
+            JobApiServlet apiServlet = new JobApiServlet(scheduler, dataSource);
             ServletHolder apiHolder = new ServletHolder(apiServlet);
             context.addServlet(apiHolder, "/api/*");
 
