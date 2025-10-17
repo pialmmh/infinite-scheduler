@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Scheduler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Left summary column - narrow */
+        .summary-column {
+            width: 220px;
+            background: #fff;
+            border-right: 1px solid #ddd;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .summary-box:nth-child(2) {
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+        }
+
+        .summary-box:nth-child(3) {
+            background: linear-gradient(135deg, #66bb6a 0%, #388e3c 100%);
+        }
+
+        .summary-value {
+            margin-top: 8px;
+        }
+
+        .summary-value .count {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .summary-value .label {
+            font-size: 10px;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .summary-box h3 {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+
+        /* Middle and right panes - wide */
+        .jobs-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            margin: 10px 5px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .pane-header {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .job-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        /* Two-column job card layout */
+        .job-item {
+            background: #f8f9fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+        }
+
+        .job-left {
+            border-right: 1px solid #e1e4e8;
+            padding-right: 15px;
+        }
+
+        .job-right {
+            position: relative;
+        }
+
+        .job-item .job-id {
+            font-weight: 600;
+            color: #0366d6;
+            margin-bottom: 8px;
+            font-size: 11px;
+            word-break: break-all;
+        }
+
+        .job-item .job-param {
+            margin: 4px 0;
+            color: #586069;
+            font-size: 11px;
+        }
+
+        .job-item .job-param strong {
+            color: #24292e;
+            min-width: 90px;
+            display: inline-block;
+            font-size: 10px;
+        }
+
+        .job-item .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.completed { background: #d4edda; color: #155724; }
+        .status.failed { background: #f8d7da; color: #721c24; }
+        .status.normal { background: #cce5ff; color: #004085; }
+        .status.started { background: #fff3cd; color: #856404; }
+
+        .view-details-btn {
+            margin-left: 8px;
+            padding: 4px 10px;
+            background: #0366d6;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 500;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .view-details-btn:hover {
+            background: #0256c7;
+        }
+
+        .last-param {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e1e4e8;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+
+        .modal-param {
+            margin: 8px 0;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .modal-param strong {
+            color: #0366d6;
+            display: inline-block;
+            min-width: 150px;
+        }
+
+        .pagination {
+            padding: 12px 15px;
+            border-top: 1px solid #e1e4e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination button {
+            padding: 6px 14px;
+            background: #0366d6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .pagination button:hover {
+            background: #0256c7;
+        }
+
+        .pagination button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            font-size: 12px;
+            color: #586069;
+        }
+
+        .no-jobs {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .param-count-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Summary Column -->
+        <div class="summary-column">
+            <div class="summary-box">
+                <h3>Next 1 Hour</h3>
+                <div class="summary-value">
+                    <div class="count" id="scheduledCount">-</div>
+                    <div class="label">Scheduled</div>
+                </div>
+            </div>
+            <div class="summary-box">
+                <h3>Last 1 Hour</h3>
+                <div class="summary-value">
+                    <div class="count" id="completedCount">-</div>
+                    <div class="label">Completed</div>
+                </div>
+            </div>
+            <div class="summary-box">
+                <h3>All Time</h3>
+                <div class="summary-value">
+                    <div class="count" id="totalExecuted">-</div>
+                    <div class="label">Executed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Pane - Scheduled Jobs -->
+        <div class="jobs-pane">
+            <div class="pane-header">Scheduled Jobs</div>
+            <div class="job-list" id="scheduledJobsList"></div>
+            <div class="pagination">
+                <button onclick="prevScheduled()" id="prevScheduledBtn">← Previous</button>
+                <span class="page-info" id="scheduledPageInfo">Page 1</span>
+                <button onclick="nextScheduled()" id="nextScheduledBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- Right Pane - History -->
+        <div class="jobs-pane">
+            <div class="pane-header">Execution History</div>
+            <div class="job-list" id="historyJobsList"></div>
+            <div class="pagination">
+                <button onclick="prevHistory()" id="prevHistoryBtn">← Previous</button>
+                <span class="page-info" id="historyPageInfo">Page 1</span>
+                <button onclick="nextHistory()" id="nextHistoryBtn">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for job details -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Job Details</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let scheduledPage = 0;
+        let historyPage = 0;
+        const pageSize = 20;
+        const maxParamsPreview = 10;
+
+        // Format date as 'YYYY-MM-DD HH:mm:ss'
+        function formatDateTime(dateValue) {
+            if (!dateValue) return '';
+            const date = new Date(dateValue);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        // Show modal with all job details
+        function showJobDetails(jobData) {
+            const modal = document.getElementById('jobModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            modalTitle.textContent = `Job Details: ${jobData.jobName}`;
+
+            let html = '';
+
+            // Add all job data
+            if (jobData.additionalData) {
+                const entries = Object.entries(jobData.additionalData);
+                entries.forEach(([key, value]) => {
+                    if (value !== null && value !== undefined) {
+                        const displayValue = (key.toLowerCase().includes('time') || key.toLowerCase().includes('date'))
+                            ? formatDateTime(value)
+                            : value;
+                        html += `<div class="modal-param"><strong>${key}:</strong> ${displayValue}</div>`;
+                    }
+                });
+            }
+
+            // Add execution info for history jobs
+            if (jobData.completedAt) {
+                html += `<div class="modal-param"><strong>Completed At:</strong> ${formatDateTime(jobData.completedAt)}</div>`;
+            }
+            if (jobData.executionDurationMs !== undefined) {
+                html += `<div class="modal-param"><strong>Execution Duration:</strong> ${jobData.executionDurationMs}ms</div>`;
+            }
+            if (jobData.errorMessage) {
+                html += `<div class="modal-param" style="background: #f8d7da;"><strong>Error:</strong> ${jobData.errorMessage}</div>`;
+            }
+
+            modalBody.innerHTML = html;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('jobModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('jobModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Load summary
+        async function loadSummary() {
+            try {
+                const response = await fetch('/api/summary');
+                const data = await response.json();
+                document.getElementById('scheduledCount').textContent = data.scheduledNext1Hour;
+                document.getElementById('completedCount').textContent = data.completedLast1Hour;
+                document.getElementById('totalExecuted').textContent = data.totalExecuted;
+            } catch (error) {
+                console.error('Error loading summary:', error);
+            }
+        }
+
+        // Load scheduled jobs
+        async function loadScheduledJobs() {
+            try {
+                const offset = scheduledPage * pageSize;
+                const response = await fetch(`/api/jobs?limit=${pageSize}&offset=${offset}`);
+                const data = await response.json();
+
+                const container = document.getElementById('scheduledJobsList');
+                if (data.jobs.length === 0) {
+                    container.innerHTML = '<div class="no-jobs">No scheduled jobs</div>';
+                } else {
+                    container.innerHTML = data.jobs.map(job => {
+                        let leftCol = `<div class="job-id">${job.jobName}</div>`;
+
+                        // Add status
+                        leftCol += `<div class="job-param"><strong>Status:</strong> <span class="status ${job.triggerState?.toLowerCase()}">${job.triggerState || 'UNKNOWN'}</span></div>`;
+
+                        // Add next fire time
+                        if (job.nextFireTime) {
+                            leftCol += `<div class="job-param"><strong>Next Fire:</strong> ${formatDateTime(job.nextFireTime)}</div>`;
+                        }
+
+                        let rightCol = '';
+                        let totalParams = 0;
+                        let viewDetailsBtn = '';
+
+                        // Display first 10 params
+                        if (job.additionalData) {
+                            const entries = Object.entries(job.additionalData);
+                            totalParams = entries.length;
+                            const previewEntries = entries.slice(0, maxParamsPreview);
+
+                            let displayedCount = 0;
+                            previewEntries.forEach(([key, value], index) => {
+                                if (value !== null && value !== undefined && key !== 'status') {
+                                    const displayValue = (key.toLowerCase().includes('time') || key.toLowerCase().includes('date'))
+                                        ? formatDateTime(value)
+                                        : value;
+
+                                    // Check if this is the last param to be displayed
+                                    const isLast = displayedCount === Math.min(maxParamsPreview - 1, previewEntries.filter(([k]) => k !== 'status').length - 1);
+                                    displayedCount++;
+
+                                    if (isLast && totalParams > 0) {
+                                        // Prepare button HTML
+                                        if (totalParams > maxParamsPreview) {
+                                            viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All <span class="param-count-badge">+${totalParams - maxParamsPreview}</span></button>`;
+                                        } else {
+                                            viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All</button>`;
+                                        }
+                                        rightCol += `<div class="job-param last-param"><span><strong>${key}:</strong> ${displayValue}</span>${viewDetailsBtn}</div>`;
+                                    } else {
+                                        rightCol += `<div class="job-param"><strong>${key}:</strong> ${displayValue}</div>`;
+                                    }
+                                }
+                            });
+                        }
+
+                        return `<div class="job-item">
+                            <div class="job-left">${leftCol}</div>
+                            <div class="job-right">${rightCol}</div>
+                        </div>`;
+                    }).join('');
+                }
+
+                document.getElementById('prevScheduledBtn').disabled = scheduledPage === 0;
+                document.getElementById('nextScheduledBtn').disabled = data.jobs.length < pageSize;
+                document.getElementById('scheduledPageInfo').textContent = `Page ${scheduledPage + 1}`;
+            } catch (error) {
+                console.error('Error loading scheduled jobs:', error);
+            }
+        }
+
+        // Load history
+        async function loadHistory() {
+            try {
+                const offset = historyPage * pageSize;
+                const response = await fetch(`/api/history?limit=${pageSize}&offset=${offset}`);
+                const data = await response.json();
+
+                const container = document.getElementById('historyJobsList');
+                if (data.jobs.length === 0) {
+                    container.innerHTML = '<div class="no-jobs">No execution history</div>';
+                } else {
+                    container.innerHTML = data.jobs.map(job => {
+                        let leftCol = `<div class="job-id">${job.jobName}</div>`;
+
+                        // Add status
+                        leftCol += `<div class="job-param"><strong>Status:</strong> <span class="status ${job.status?.toLowerCase()}">${job.status || 'UNKNOWN'}</span></div>`;
+
+                        // Add completion time
+                        if (job.completedAt) {
+                            leftCol += `<div class="job-param"><strong>Completed:</strong> ${formatDateTime(job.completedAt)}</div>`;
+                        }
+
+                        // Add duration
+                        if (job.executionDurationMs !== undefined) {
+                            leftCol += `<div class="job-param"><strong>Duration:</strong> ${job.executionDurationMs}ms</div>`;
+                        }
+
+                        let rightCol = '';
+                        let totalParams = 0;
+                        let viewDetailsBtn = '';
+
+                        // Display first 10 params
+                        if (job.additionalData) {
+                            const entries = Object.entries(job.additionalData);
+                            totalParams = entries.length;
+                            const previewEntries = entries.slice(0, maxParamsPreview);
+
+                            let displayedCount = 0;
+                            previewEntries.forEach(([key, value], index) => {
+                                if (value !== null && value !== undefined && key !== 'status') {
+                                    const displayValue = (key.toLowerCase().includes('time') || key.toLowerCase().includes('date'))
+                                        ? formatDateTime(value)
+                                        : value;
+
+                                    // Check if this is the last param (and no error message)
+                                    const nonStatusEntries = previewEntries.filter(([k]) => k !== 'status');
+                                    const isLast = displayedCount === nonStatusEntries.length - 1 && !job.errorMessage;
+                                    displayedCount++;
+
+                                    if (isLast && totalParams > 0) {
+                                        // Prepare button HTML
+                                        if (totalParams > maxParamsPreview) {
+                                            viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All <span class="param-count-badge">+${totalParams - maxParamsPreview}</span></button>`;
+                                        } else {
+                                            viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All</button>`;
+                                        }
+                                        rightCol += `<div class="job-param last-param"><span><strong>${key}:</strong> ${displayValue}</span>${viewDetailsBtn}</div>`;
+                                    } else {
+                                        rightCol += `<div class="job-param"><strong>${key}:</strong> ${displayValue}</div>`;
+                                    }
+                                }
+                            });
+                        }
+
+                        // Add error message if present (with button inline if it's the only/last item)
+                        if (job.errorMessage) {
+                            if (totalParams > 0) {
+                                // Prepare button if not already added
+                                if (!viewDetailsBtn) {
+                                    if (totalParams > maxParamsPreview) {
+                                        viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All <span class="param-count-badge">+${totalParams - maxParamsPreview}</span></button>`;
+                                    } else {
+                                        viewDetailsBtn = `<button class="view-details-btn" onclick='showJobDetails(${JSON.stringify(job).replace(/'/g, "&#39;")})'>View All</button>`;
+                                    }
+                                }
+                                rightCol += `<div class="job-param last-param" style="color: #c00;"><span><strong>Error:</strong> ${job.errorMessage}</span>${viewDetailsBtn}</div>`;
+                            } else {
+                                rightCol += `<div class="job-param" style="color: #c00;"><strong>Error:</strong> ${job.errorMessage}</div>`;
+                            }
+                        }
+
+                        return `<div class="job-item">
+                            <div class="job-left">${leftCol}</div>
+                            <div class="job-right">${rightCol}</div>
+                        </div>`;
+                    }).join('');
+                }
+
+                document.getElementById('prevHistoryBtn').disabled = historyPage === 0;
+                document.getElementById('nextHistoryBtn').disabled = data.jobs.length < pageSize;
+                document.getElementById('historyPageInfo').textContent = `Page ${historyPage + 1}`;
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+        function nextScheduled() {
+            scheduledPage++;
+            loadScheduledJobs();
+        }
+
+        function prevScheduled() {
+            if (scheduledPage > 0) {
+                scheduledPage--;
+                loadScheduledJobs();
+            }
+        }
+
+        function nextHistory() {
+            historyPage++;
+            loadHistory();
+        }
+
+        function prevHistory() {
+            if (historyPage > 0) {
+                historyPage--;
+                loadHistory();
+            }
+        }
+
+        // Initial load
+        loadSummary();
+        loadScheduledJobs();
+        loadHistory();
+
+        // Auto-refresh every 5 seconds
+        setInterval(() => {
+            loadSummary();
+            loadScheduledJobs();
+            loadHistory();
+        }, 5000);
+    </script>
+</body>
+</html>

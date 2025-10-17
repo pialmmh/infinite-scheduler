@@ -3,7 +3,6 @@ package com.telcobright.scheduler;
 import com.telcobright.api.ShardingRepository;
 import com.telcobright.core.repository.GenericMultiTableRepository;
 import com.telcobright.core.entity.ShardingEntity;
-import com.telcobright.scheduler.ui.SchedulerUIServer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.quartz.*;
@@ -38,7 +37,6 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity> {
     private SchedulerMonitor monitor;
     private JobHistoryTracker historyTracker;
     private DatabaseStatusUpdater statusUpdater;
-    private SchedulerUIServer uiServer;
     private static final String SCHEDULER_INSTANCE_KEY = "scheduler_instance";
     
     public InfiniteScheduler(Class<TEntity> entityClass,
@@ -78,14 +76,6 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity> {
         
         // Add job listener for monitoring and history tracking
         addJobListener();
-
-        // Initialize UI server if enabled
-        if (config.isEnableUI()) {
-            this.uiServer = new SchedulerUIServer(quartzScheduler, cleanupDataSource, config.getUiPort());
-            logger.info("UI server initialized on port {}", config.getUiPort());
-        } else {
-            logger.info("UI server disabled");
-        }
 
         logger.info("InfiniteScheduler initialized with fetch interval: {}s, lookahead: {}s, cleanup: {}",
             config.getFetchIntervalSeconds(), config.getLookaheadWindowSeconds(),
@@ -134,14 +124,6 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity> {
 
         // Add job listener for monitoring and history tracking
         addJobListener();
-
-        // Initialize UI server if enabled
-        if (config.isEnableUI()) {
-            this.uiServer = new SchedulerUIServer(quartzScheduler, cleanupDataSource, config.getUiPort());
-            logger.info("UI server initialized on port {}", config.getUiPort());
-        } else {
-            logger.info("UI server disabled");
-        }
 
         logger.info("InfiniteScheduler initialized (deprecated constructor) with fetch interval: {}s, lookahead: {}s, cleanup: {}",
             config.getFetchIntervalSeconds(), config.getLookaheadWindowSeconds(),
@@ -251,14 +233,9 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity> {
             
             // Start cleanup service
             cleanupService.start();
-            
+
             // Start monitor
             monitor.start();
-
-            // Start UI server if enabled
-            if (config.isEnableUI() && uiServer != null) {
-                uiServer.start();
-            }
 
             logger.info("InfiniteScheduler started successfully");
         } else {
@@ -276,14 +253,9 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity> {
             
             // Stop monitor
             monitor.stop();
-            
+
             // Stop cleanup service
             cleanupService.stop();
-
-            // Stop UI server if running
-            if (uiServer != null && uiServer.isRunning()) {
-                uiServer.stop();
-            }
 
             quartzScheduler.shutdown(true);
 
@@ -341,8 +313,8 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity> {
             
             List<TEntity> recentEntities;
             try {
-                logger.info("📥 Querying partitioned-repo for date range: {} to {}", queryStartTime, queryEndTime);
-                recentEntities = repository.findAllByDateRange(queryStartTime, queryEndTime);
+                logger.info("📥 Querying split-verse for partition range: {} to {}", queryStartTime, queryEndTime);
+                recentEntities = repository.findAllByPartitionRange(queryStartTime, queryEndTime);
                 logger.info("📊 Found {} total entities from database", recentEntities.size());
                 
                 // Debug: show status of first few entities

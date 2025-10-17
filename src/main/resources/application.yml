@@ -1,0 +1,42 @@
+# Quarkus HTTP Server Configuration
+quarkus:
+  http:
+    port: 7080
+
+  # Redis Configuration
+  redis:
+    hosts: redis://127.0.0.1:6379
+
+# Scheduler Settings
+scheduler:
+  fetch-interval: 25          # Lookahead interval (seconds)
+  lookahead-window: 30        # Lookahead window (seconds)
+  publisher: kafka            # "kafka" or "redis"
+
+# MySQL Configuration (for Quartz + split-verse)
+datasource:
+  host: 127.0.0.1
+  port: 3306
+  database: scheduler
+  username: root
+  password: 123456
+
+# Split-verse Repository Settings
+repository:
+  table-prefix: scheduled_jobs
+
+# Kafka Configuration
+kafka:
+  bootstrap:
+    servers: localhost:9092
+
+# SmallRye Kafka Messaging
+mp:
+  messaging:
+    outgoing:
+      jobs-out:
+        connector: smallrye-kafka
+        topic: scheduled_jobs
+        bootstrap.servers: localhost:9092
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: org.apache.kafka.common.serialization.StringSerializer

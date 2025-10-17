@@ -50,9 +50,9 @@ public class TableCreationTest {
             
             LocalDateTime queryStart = now.minusMinutes(1);
             LocalDateTime queryEnd = now.plusMinutes(5);
-            
-            var entities = scheduler.getRepository().findAllByDateRange(queryStart, queryEnd);
-            
+
+            var entities = scheduler.getRepository().findAllByPartitionRange(queryStart, queryEnd);
+
             System.out.println("✅ Successfully queried entities: " + entities.size() + " found");
             
             for (var entity : entities) {

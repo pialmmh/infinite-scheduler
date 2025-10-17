@@ -1,0 +1,30 @@
+# Build output
+target/
+*.class
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Logs
+logs/
+*.log
+
+# Node
+node_modules/
+package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary (root level only)
+/com/
+/check-ui.js
+/campaignPriorityForSmsSending.md
