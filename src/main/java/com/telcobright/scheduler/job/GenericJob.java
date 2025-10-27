@@ -62,13 +62,13 @@ public class GenericJob implements Job {
                     .brokerAddress(brokerAddress != null ? brokerAddress : "localhost:9092")
                     .build();
             } else {
-                // Default to mock Kafka for testing
+                // Default to console output for testing
                 queueConfig = QueueConfig.builder()
-                    .queueType(QueueConfig.QueueType.KAFKA)
+                    .queueType(QueueConfig.QueueType.CONSOLE)
                     .topicName(appName + "_topic")
-                    .brokerAddress("mock://localhost")
+                    .brokerAddress("")
                     .build();
-                logger.warn("No queue config provided, using default mock Kafka for app '{}'", appName);
+                logger.warn("No queue config provided, using default console output for app '{}'", appName);
             }
 
             // Get or create queue producer

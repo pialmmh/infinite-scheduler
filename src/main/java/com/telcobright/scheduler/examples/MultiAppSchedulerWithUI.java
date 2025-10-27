@@ -116,11 +116,11 @@ public class MultiAppSchedulerWithUI {
     }
 
     private static void registerApplications(MultiAppSchedulerManager manager) {
-        // SMS Application - sends to Kafka topic
+        // SMS Application - outputs to console for testing
         QueueConfig smsQueueConfig = QueueConfig.builder()
-            .queueType(QueueConfig.QueueType.KAFKA)
+            .queueType(QueueConfig.QueueType.CONSOLE)
             .topicName("sms-notifications")
-            .brokerAddress("localhost:9092")
+            .brokerAddress("")  // Empty for console
             .build();
 
         AppConfig smsConfig = AppConfig.builder("sms")
@@ -131,13 +131,13 @@ public class MultiAppSchedulerWithUI {
             .queueConfig(smsQueueConfig)
             .build();
         manager.registerApp(smsConfig, new SmsJobHandler());
-        logger.info("✅ Registered SMS application → Kafka topic: sms-notifications");
+        logger.info("✅ Registered SMS application → Console output: sms-notifications");
 
-        // SIPCall Application - sends to Redis queue
+        // SIPCall Application - outputs to console for testing
         QueueConfig sipCallQueueConfig = QueueConfig.builder()
-            .queueType(QueueConfig.QueueType.REDIS)
+            .queueType(QueueConfig.QueueType.CONSOLE)
             .topicName("sipcall-queue")
-            .brokerAddress("localhost:6379")
+            .brokerAddress("")  // Empty for console
             .build();
 
         AppConfig sipCallConfig = AppConfig.builder("sipcall")
@@ -148,13 +148,13 @@ public class MultiAppSchedulerWithUI {
             .queueConfig(sipCallQueueConfig)
             .build();
         manager.registerApp(sipCallConfig, new SipCallJobHandler());
-        logger.info("✅ Registered SIPCall application → Redis queue: sipcall-queue");
+        logger.info("✅ Registered SIPCall application → Console output: sipcall-queue");
 
-        // Payment Gateway Application - sends to Kafka topic
+        // Payment Gateway Application - outputs to console for testing
         QueueConfig paymentQueueConfig = QueueConfig.builder()
-            .queueType(QueueConfig.QueueType.KAFKA)
+            .queueType(QueueConfig.QueueType.CONSOLE)
             .topicName("payment-transactions")
-            .brokerAddress("localhost:9092")
+            .brokerAddress("")  // Empty for console
             .build();
 
         AppConfig paymentConfig = AppConfig.builder("payment_gateway")
@@ -165,7 +165,7 @@ public class MultiAppSchedulerWithUI {
             .queueConfig(paymentQueueConfig)
             .build();
         manager.registerApp(paymentConfig, new PaymentGatewayJobHandler());
-        logger.info("✅ Registered Payment Gateway application → Kafka topic: payment-transactions");
+        logger.info("✅ Registered Payment Gateway application → Console output: payment-transactions");
     }
 
     private static void createSmsJob(MultiAppSchedulerManager manager) {

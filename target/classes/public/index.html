@@ -414,6 +414,15 @@
                             <span class="job-param-label">Entity ID:</span> ${job.entityId || 'N/A'}
                         </div>
                         <div class="job-param">
+                            <span class="job-param-label">Queue Type:</span> ${job.queueType || 'N/A'}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Topic/Queue:</span> ${job.topicName || 'N/A'}
+                        </div>
+                        ${job.brokerAddress ? `<div class="job-param">
+                            <span class="job-param-label">Broker:</span> ${job.brokerAddress}
+                        </div>` : ''}
+                        <div class="job-param">
                             <span class="job-param-label">Scheduled:</span> ${formatDateTime(job.scheduledTime)}
                         </div>
                         <div class="job-param">
@@ -481,6 +490,15 @@
                         <div class="job-param">
                             <span class="job-param-label">Entity ID:</span> ${job.entityId || 'N/A'}
                         </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Queue Type:</span> ${job.queueType || 'N/A'}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Topic/Queue:</span> ${job.topicName || 'N/A'}
+                        </div>
+                        ${job.brokerAddress ? `<div class="job-param">
+                            <span class="job-param-label">Broker:</span> ${job.brokerAddress}
+                        </div>` : ''}
                         <div class="job-param">
                             <span class="job-param-label">Scheduled:</span> ${formatDateTime(job.scheduledTime)}
                         </div>

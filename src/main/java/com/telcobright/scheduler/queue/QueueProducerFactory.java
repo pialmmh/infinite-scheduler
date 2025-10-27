@@ -24,14 +24,16 @@ public class QueueProducerFactory {
             QueueProducer producer;
 
             switch (config.getQueueType()) {
+                case CONSOLE:
+                    // Console/Mock producer for testing
+                    producer = new MockQueueProducer();
+                    break;
                 case KAFKA:
-                    // For now, use mock producer for Kafka
-                    producer = new MockQueueProducer();
-                    break;
+                    // TODO: Implement real Kafka producer
+                    throw new IllegalArgumentException("KAFKA queue type not yet implemented. Use CONSOLE for testing.");
                 case REDIS:
-                    // For now, use mock producer for Redis
-                    producer = new MockQueueProducer();
-                    break;
+                    // TODO: Implement real Redis producer
+                    throw new IllegalArgumentException("REDIS queue type not yet implemented. Use CONSOLE for testing.");
                 default:
                     throw new IllegalArgumentException("Unsupported queue type: " + config.getQueueType());
             }

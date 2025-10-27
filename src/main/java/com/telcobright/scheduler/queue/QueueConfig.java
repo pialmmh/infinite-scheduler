@@ -6,6 +6,7 @@ package com.telcobright.scheduler.queue;
 public class QueueConfig {
 
     public enum QueueType {
+        CONSOLE,  // Mock/Console output for testing
         KAFKA,
         REDIS
     }

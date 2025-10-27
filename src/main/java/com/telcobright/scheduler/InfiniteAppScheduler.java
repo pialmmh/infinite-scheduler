@@ -222,16 +222,24 @@ public class InfiniteAppScheduler {
     private void scheduleQuartzJob(GenericSchedulableEntity entity) {
         try {
             Map<String, Object> jobData = entity.getJobData();
-            logger.info("DEBUG: Retrieved jobData from entity: {}", jobData);
-            logger.info("DEBUG: Entity jobDataJson: {}", entity.getJobDataJson());
 
             // Add app context
             jobData.put("appName", appConfig.getAppName());
             jobData.put("entityId", entity.getId());
             jobData.put("jobName", entity.getJobName());
 
+            // Add queue configuration to job data
+            if (appConfig.getQueueConfig() != null) {
+                jobData.put("queueType", appConfig.getQueueConfig().getQueueType().toString());
+                jobData.put("topicName", appConfig.getQueueConfig().getTopicName());
+                jobData.put("brokerAddress", appConfig.getQueueConfig().getBrokerAddress());
+            } else {
+                jobData.put("queueType", "CONSOLE");
+                jobData.put("topicName", "console");
+                jobData.put("brokerAddress", "");
+            }
+
             String finalJobDataJson = gson.toJson(jobData);
-            logger.info("DEBUG: Final jobDataJson to store in Quartz: {}", finalJobDataJson);
 
             // Create Quartz job
             JobDetail job = JobBuilder.newJob(GenericJob.class)

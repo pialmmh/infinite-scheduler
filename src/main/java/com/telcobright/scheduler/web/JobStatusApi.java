@@ -57,15 +57,15 @@ public class JobStatusApi {
     private void getScheduledJobs(Context ctx) {
         try (Connection conn = dataSource.getConnection()) {
             // Query all app history tables with UNION ALL
-            String sql = "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at " +
+            String sql = "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at, job_data " +
                         "FROM sms_job_execution_history " +
                         "WHERE status = 'SCHEDULED' OR status = 'STARTED' " +
                         "UNION ALL " +
-                        "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at " +
+                        "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at, job_data " +
                         "FROM sipcall_job_execution_history " +
                         "WHERE status = 'SCHEDULED' OR status = 'STARTED' " +
                         "UNION ALL " +
-                        "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at " +
+                        "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at, job_data " +
                         "FROM payment_gateway_job_execution_history " +
                         "WHERE status = 'SCHEDULED' OR status = 'STARTED' " +
                         "ORDER BY scheduled_time ASC " +
@@ -87,6 +87,23 @@ public class JobStatusApi {
                     job.put("scheduledTime", rs.getTimestamp("scheduled_time").toString());
                     job.put("status", rs.getString("status"));
                     job.put("createdAt", rs.getTimestamp("created_at").toString());
+
+                    // Extract queue configuration from job_data JSON
+                    String jobDataJson = rs.getString("job_data");
+                    if (jobDataJson != null && !jobDataJson.isEmpty()) {
+                        try {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> jobData = gson.fromJson(jobDataJson, Map.class);
+                            if (jobData != null) {
+                                job.put("queueType", jobData.get("queueType"));
+                                job.put("topicName", jobData.get("topicName"));
+                                job.put("brokerAddress", jobData.get("brokerAddress"));
+                            }
+                        } catch (Exception e) {
+                            logger.warn("Failed to parse job_data JSON for job {}", job.get("jobId"), e);
+                        }
+                    }
+
                     jobs.add(job);
                 }
             }
@@ -103,17 +120,17 @@ public class JobStatusApi {
         try (Connection conn = dataSource.getConnection()) {
             // Query all app history tables with UNION ALL
             String sql = "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, started_at, " +
-                        "completed_at, status, error_message, execution_duration_ms " +
+                        "completed_at, status, error_message, execution_duration_ms, job_data " +
                         "FROM sms_job_execution_history " +
                         "WHERE status IN ('COMPLETED', 'FAILED') " +
                         "UNION ALL " +
                         "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, started_at, " +
-                        "completed_at, status, error_message, execution_duration_ms " +
+                        "completed_at, status, error_message, execution_duration_ms, job_data " +
                         "FROM sipcall_job_execution_history " +
                         "WHERE status IN ('COMPLETED', 'FAILED') " +
                         "UNION ALL " +
                         "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, started_at, " +
-                        "completed_at, status, error_message, execution_duration_ms " +
+                        "completed_at, status, error_message, execution_duration_ms, job_data " +
                         "FROM payment_gateway_job_execution_history " +
                         "WHERE status IN ('COMPLETED', 'FAILED') " +
                         "ORDER BY completed_at DESC " +
@@ -143,6 +160,23 @@ public class JobStatusApi {
                     job.put("status", rs.getString("status"));
                     job.put("errorMessage", rs.getString("error_message"));
                     job.put("executionDurationMs", rs.getLong("execution_duration_ms"));
+
+                    // Extract queue configuration from job_data JSON
+                    String jobDataJson = rs.getString("job_data");
+                    if (jobDataJson != null && !jobDataJson.isEmpty()) {
+                        try {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> jobData = gson.fromJson(jobDataJson, Map.class);
+                            if (jobData != null) {
+                                job.put("queueType", jobData.get("queueType"));
+                                job.put("topicName", jobData.get("topicName"));
+                                job.put("brokerAddress", jobData.get("brokerAddress"));
+                            }
+                        } catch (Exception e) {
+                            logger.warn("Failed to parse job_data JSON for job {}", job.get("jobId"), e);
+                        }
+                    }
+
                     jobs.add(job);
                 }
             }
