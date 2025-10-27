@@ -1,5 +1,7 @@
 package com.telcobright.scheduler.config;
 
+import com.telcobright.scheduler.queue.QueueConfig;
+
 /**
  * Configuration for a single application in the multi-app scheduler.
  * Each app (sms, sipcall, payment_gateway, etc.) has its own configuration.
@@ -11,6 +13,7 @@ public class AppConfig {
     private final int fetchIntervalSeconds;
     private final int lookaheadWindowSeconds;
     private final int maxJobsPerFetch;
+    private final QueueConfig queueConfig;
 
     public AppConfig(String appName) {
         this(appName,
@@ -18,17 +21,20 @@ public class AppConfig {
              appName + "_job_execution_history",  // Default history table
              5,  // Default fetch interval
              30, // Default lookahead window
-             1000); // Default max jobs per fetch
+             1000, // Default max jobs per fetch
+             null); // No default queue config
     }
 
     public AppConfig(String appName, String tablePrefix, String historyTableName,
-                    int fetchIntervalSeconds, int lookaheadWindowSeconds, int maxJobsPerFetch) {
+                    int fetchIntervalSeconds, int lookaheadWindowSeconds, int maxJobsPerFetch,
+                    QueueConfig queueConfig) {
         this.appName = appName;
         this.tablePrefix = tablePrefix;
         this.historyTableName = historyTableName;
         this.fetchIntervalSeconds = fetchIntervalSeconds;
         this.lookaheadWindowSeconds = lookaheadWindowSeconds;
         this.maxJobsPerFetch = maxJobsPerFetch;
+        this.queueConfig = queueConfig;
     }
 
     public String getAppName() {
@@ -55,6 +61,10 @@ public class AppConfig {
         return maxJobsPerFetch;
     }
 
+    public QueueConfig getQueueConfig() {
+        return queueConfig;
+    }
+
     public static Builder builder(String appName) {
         return new Builder(appName);
     }
@@ -66,6 +76,7 @@ public class AppConfig {
         private int fetchIntervalSeconds = 5;
         private int lookaheadWindowSeconds = 30;
         private int maxJobsPerFetch = 1000;
+        private QueueConfig queueConfig;
 
         public Builder(String appName) {
             this.appName = appName;
@@ -98,9 +109,14 @@ public class AppConfig {
             return this;
         }
 
+        public Builder queueConfig(QueueConfig queueConfig) {
+            this.queueConfig = queueConfig;
+            return this;
+        }
+
         public AppConfig build() {
             return new AppConfig(appName, tablePrefix, historyTableName,
-                fetchIntervalSeconds, lookaheadWindowSeconds, maxJobsPerFetch);
+                fetchIntervalSeconds, lookaheadWindowSeconds, maxJobsPerFetch, queueConfig);
         }
     }
 }

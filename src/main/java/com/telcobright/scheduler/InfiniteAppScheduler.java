@@ -222,18 +222,33 @@ public class InfiniteAppScheduler {
     private void scheduleQuartzJob(GenericSchedulableEntity entity) {
         try {
             Map<String, Object> jobData = entity.getJobData();
+            logger.info("DEBUG: Retrieved jobData from entity: {}", jobData);
+            logger.info("DEBUG: Entity jobDataJson: {}", entity.getJobDataJson());
 
             // Add app context
             jobData.put("appName", appConfig.getAppName());
             jobData.put("entityId", entity.getId());
+            jobData.put("jobName", entity.getJobName());
+
+            String finalJobDataJson = gson.toJson(jobData);
+            logger.info("DEBUG: Final jobDataJson to store in Quartz: {}", finalJobDataJson);
 
             // Create Quartz job
             JobDetail job = JobBuilder.newJob(GenericJob.class)
                 .withIdentity(entity.getJobId(), appConfig.getAppName())
                 .build();
 
-            // Store entire map in JobDataMap
-            job.getJobDataMap().putAll(jobData);
+            // Store job data as JSON string to preserve types through Quartz persistence
+            job.getJobDataMap().put("jobDataJson", finalJobDataJson);
+            job.getJobDataMap().put("appName", appConfig.getAppName());
+            job.getJobDataMap().put("entityId", entity.getId());
+
+            // Add queue configuration if present
+            if (appConfig.getQueueConfig() != null) {
+                job.getJobDataMap().put("queueType", appConfig.getQueueConfig().getQueueType().toString());
+                job.getJobDataMap().put("topicName", appConfig.getQueueConfig().getTopicName());
+                job.getJobDataMap().put("brokerAddress", appConfig.getQueueConfig().getBrokerAddress());
+            }
 
             // Create trigger
             Trigger trigger = TriggerBuilder.newTrigger()

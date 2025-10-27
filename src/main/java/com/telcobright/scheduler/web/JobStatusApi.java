@@ -56,8 +56,17 @@ public class JobStatusApi {
 
     private void getScheduledJobs(Context ctx) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT id, job_id, job_name, job_group, entity_id, scheduled_time, status, created_at " +
-                        "FROM job_execution_history " +
+            // Query all app history tables with UNION ALL
+            String sql = "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at " +
+                        "FROM sms_job_execution_history " +
+                        "WHERE status = 'SCHEDULED' OR status = 'STARTED' " +
+                        "UNION ALL " +
+                        "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at " +
+                        "FROM sipcall_job_execution_history " +
+                        "WHERE status = 'SCHEDULED' OR status = 'STARTED' " +
+                        "UNION ALL " +
+                        "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, status, created_at " +
+                        "FROM payment_gateway_job_execution_history " +
                         "WHERE status = 'SCHEDULED' OR status = 'STARTED' " +
                         "ORDER BY scheduled_time ASC " +
                         "LIMIT 100";
@@ -73,6 +82,7 @@ public class JobStatusApi {
                     job.put("jobId", rs.getString("job_id"));
                     job.put("jobName", rs.getString("job_name"));
                     job.put("jobGroup", rs.getString("job_group"));
+                    job.put("appName", rs.getString("app_name"));
                     job.put("entityId", rs.getString("entity_id"));
                     job.put("scheduledTime", rs.getTimestamp("scheduled_time").toString());
                     job.put("status", rs.getString("status"));
@@ -91,9 +101,20 @@ public class JobStatusApi {
 
     private void getJobHistory(Context ctx) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT id, job_id, job_name, job_group, entity_id, scheduled_time, started_at, " +
+            // Query all app history tables with UNION ALL
+            String sql = "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, started_at, " +
                         "completed_at, status, error_message, execution_duration_ms " +
-                        "FROM job_execution_history " +
+                        "FROM sms_job_execution_history " +
+                        "WHERE status IN ('COMPLETED', 'FAILED') " +
+                        "UNION ALL " +
+                        "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, started_at, " +
+                        "completed_at, status, error_message, execution_duration_ms " +
+                        "FROM sipcall_job_execution_history " +
+                        "WHERE status IN ('COMPLETED', 'FAILED') " +
+                        "UNION ALL " +
+                        "SELECT id, job_id, job_name, job_group, app_name, entity_id, scheduled_time, started_at, " +
+                        "completed_at, status, error_message, execution_duration_ms " +
+                        "FROM payment_gateway_job_execution_history " +
                         "WHERE status IN ('COMPLETED', 'FAILED') " +
                         "ORDER BY completed_at DESC " +
                         "LIMIT 100";
@@ -109,6 +130,7 @@ public class JobStatusApi {
                     job.put("jobId", rs.getString("job_id"));
                     job.put("jobName", rs.getString("job_name"));
                     job.put("jobGroup", rs.getString("job_group"));
+                    job.put("appName", rs.getString("app_name"));
                     job.put("entityId", rs.getString("entity_id"));
                     job.put("scheduledTime", rs.getTimestamp("scheduled_time").toString());
 
@@ -137,8 +159,14 @@ public class JobStatusApi {
         try (Connection conn = dataSource.getConnection()) {
             Map<String, Object> stats = new HashMap<>();
 
-            // Count by status
-            String countSql = "SELECT status, COUNT(*) as count FROM job_execution_history GROUP BY status";
+            // Count by status across all app tables
+            String countSql = "SELECT status, COUNT(*) as count FROM ( " +
+                             "SELECT status FROM sms_job_execution_history " +
+                             "UNION ALL " +
+                             "SELECT status FROM sipcall_job_execution_history " +
+                             "UNION ALL " +
+                             "SELECT status FROM payment_gateway_job_execution_history " +
+                             ") AS all_jobs GROUP BY status";
             try (PreparedStatement stmt = conn.prepareStatement(countSql);
                  ResultSet rs = stmt.executeQuery()) {
 
@@ -149,8 +177,14 @@ public class JobStatusApi {
                 stats.put("statusCounts", statusCounts);
             }
 
-            // Total jobs
-            String totalSql = "SELECT COUNT(*) as total FROM job_execution_history";
+            // Total jobs across all app tables
+            String totalSql = "SELECT COUNT(*) as total FROM ( " +
+                             "SELECT 1 FROM sms_job_execution_history " +
+                             "UNION ALL " +
+                             "SELECT 1 FROM sipcall_job_execution_history " +
+                             "UNION ALL " +
+                             "SELECT 1 FROM payment_gateway_job_execution_history " +
+                             ") AS all_jobs";
             try (PreparedStatement stmt = conn.prepareStatement(totalSql);
                  ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {

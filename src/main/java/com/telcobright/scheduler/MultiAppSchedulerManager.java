@@ -136,6 +136,12 @@ public class MultiAppSchedulerManager {
     public void startAll() throws SchedulerException {
         // Start Quartz scheduler
         if (!sharedQuartzScheduler.isStarted()) {
+            // Add global job listener for tracking completion/failure
+            DataSource listenerDataSource = createDataSource();
+            JobCompletionListener completionListener = new JobCompletionListener(listenerDataSource);
+            sharedQuartzScheduler.getListenerManager().addJobListener(completionListener);
+            logger.info("Registered JobCompletionListener");
+
             sharedQuartzScheduler.start();
             logger.info("Started shared Quartz scheduler");
         }

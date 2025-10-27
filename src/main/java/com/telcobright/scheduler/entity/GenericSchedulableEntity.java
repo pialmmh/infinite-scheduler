@@ -42,7 +42,9 @@ public class GenericSchedulableEntity implements SchedulableEntity {
 
     // Transient - not stored in DB
     private transient Map<String, Object> jobData;
-    private transient Gson gson = new Gson();
+
+    // Static Gson instance to avoid transient initialization issues
+    private static final Gson GSON = new Gson();
 
     public GenericSchedulableEntity() {
         this.id = UUID.randomUUID().toString();
@@ -75,21 +77,36 @@ public class GenericSchedulableEntity implements SchedulableEntity {
             this.jobName = "job-" + this.id;
         }
 
+        // Create a copy of jobData with LocalDateTime converted to String for JSON serialization
+        Map<String, Object> serializableData = new HashMap<>();
+        for (Map.Entry<String, Object> entry : jobData.entrySet()) {
+            if (entry.getValue() instanceof LocalDateTime) {
+                serializableData.put(entry.getKey(), entry.getValue().toString());
+            } else {
+                serializableData.put(entry.getKey(), entry.getValue());
+            }
+        }
+
         // Serialize map to JSON
-        this.jobDataJson = gson.toJson(jobData);
+        this.jobDataJson = GSON.toJson(serializableData);
     }
 
     public Map<String, Object> getJobData() {
+        System.out.println("DEBUG getJobData: jobData=" + jobData + ", jobDataJson=" + jobDataJson);
         if (jobData == null && jobDataJson != null) {
-            jobData = gson.fromJson(jobDataJson,
+            System.out.println("DEBUG: Deserializing jobDataJson...");
+            jobData = GSON.fromJson(jobDataJson,
                 new TypeToken<Map<String, Object>>(){}.getType());
+            System.out.println("DEBUG: Deserialized jobData=" + jobData);
         }
-        return jobData;
+        Map<String, Object> result = jobData != null ? jobData : new HashMap<>();
+        System.out.println("DEBUG: Returning jobData with size=" + result.size() + ", keys=" + result.keySet());
+        return result;
     }
 
     public void setJobData(Map<String, Object> jobData) {
         this.jobData = jobData;
-        this.jobDataJson = gson.toJson(jobData);
+        this.jobDataJson = GSON.toJson(jobData);
     }
 
     @Override

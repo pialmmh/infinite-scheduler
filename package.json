@@ -1,0 +1,23 @@
+{
+  "name": "infinite-scheduler",
+  "version": "1.0.0",
+  "description": "A high-performance, scalable job scheduling system built on Quartz Scheduler with MySQL persistence, designed to handle millions to billions of scheduled jobs efficiently.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pialmmh/infinite-scheduler.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pialmmh/infinite-scheduler/issues"
+  },
+  "homepage": "https://github.com/pialmmh/infinite-scheduler#readme",
+  "dependencies": {
+    "playwright": "^1.56.1"
+  }
+}
