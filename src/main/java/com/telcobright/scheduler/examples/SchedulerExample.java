@@ -47,8 +47,8 @@ public class SchedulerExample {
             .build();
         
         // Create scheduler with complete config - repository is created and managed internally
-        InfiniteScheduler<SmsEntity, Long> scheduler = 
-            new InfiniteScheduler<>(SmsEntity.class, Long.class, config, SmsJob.class);
+        InfiniteScheduler<SmsEntity> scheduler = 
+            new InfiniteScheduler<>(SmsEntity.class, config, SmsJob.class);
         
         // Create SMS jobs to be executed in the next 5 minutes
         createSmsJobs(scheduler, now);
@@ -71,7 +71,7 @@ public class SchedulerExample {
         scheduler.stop();
     }
     
-    private static void createSmsJobs(InfiniteScheduler<SmsEntity, Long> scheduler, LocalDateTime now) {
+    private static void createSmsJobs(InfiniteScheduler<SmsEntity> scheduler, LocalDateTime now) {
         logger.info("Creating 5 SMS jobs for next 5 minutes (Bangladesh local time will be stored in sms tables)...");
         
         List<SmsEntity> smsJobs = new ArrayList<>();
@@ -89,13 +89,12 @@ public class SchedulerExample {
             "SMS 5: Scheduled for " + now.plusMinutes(5).format(TIME_FORMATTER) + " BD"
         };
         
-        for (int i = 0; i < 0; i++) {
+        for (int i = 0; i < 5; i++) {
             // Schedule jobs: 1 minute apart starting 1 minute from now
             // This will store the EXACT Bangladesh local time in the sms table
             LocalDateTime scheduledTime = now.plusMinutes(i + 1);
             
             SmsEntity smsEntity = new SmsEntity();
-            smsEntity.setId((long) (i + 1));
             smsEntity.setPhoneNumber(phoneNumbers[i]);
             smsEntity.setMessage(messages[i]);
             smsEntity.setStatus("PENDING");
@@ -110,7 +109,7 @@ public class SchedulerExample {
             for (SmsEntity entity : smsJobs) {
                 scheduler.getRepository().insert(entity);
                 logger.info("✅ Inserted SMS job #{}: {} at {} (Bangladesh local time stored in sms table)", 
-                    entity.getId().intValue(), entity.getPhoneNumber(), entity.getScheduledTime().format(TIME_FORMATTER));
+                    entity.getId(), entity.getPhoneNumber(), entity.getScheduledTime().format(TIME_FORMATTER));
             }
             
             logger.info("📅 All jobs inserted with Bangladesh local times: {} to {}", 

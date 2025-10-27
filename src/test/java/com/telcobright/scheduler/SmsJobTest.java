@@ -21,8 +21,8 @@ public class SmsJobTest {
                 .repositoryTablePrefix("sms_test")
                 .build();
             
-            InfiniteScheduler<SmsEntity, Long> scheduler = 
-                new InfiniteScheduler<>(SmsEntity.class, Long.class, config, SmsJob.class);
+            InfiniteScheduler<SmsEntity> scheduler =
+                new InfiniteScheduler<>(SmsEntity.class, config, SmsJob.class);
                 
             System.out.println("SUCCESS: SMS scheduler with SmsJob created successfully");
             scheduler.stop();

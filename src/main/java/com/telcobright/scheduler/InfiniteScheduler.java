@@ -1,8 +1,8 @@
 package com.telcobright.scheduler;
 
-import com.telcobright.db.repository.ShardingRepository;
-import com.telcobright.db.repository.GenericMultiTableRepository;
-import com.telcobright.db.entity.ShardingEntity;
+import com.telcobright.api.ShardingRepository;
+import com.telcobright.core.repository.GenericMultiTableRepository;
+import com.telcobright.core.entity.ShardingEntity;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.quartz.*;
@@ -23,11 +23,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.quartz.Job;
 
-public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & ShardingEntity<TKey>, TKey> {
-    
+public class InfiniteScheduler<TEntity extends SchedulableEntity> {
+
     private static final Logger logger = LoggerFactory.getLogger(InfiniteScheduler.class);
-    
-    private final ShardingRepository<TEntity, TKey> repository;
+
+    private final ShardingRepository<TEntity, LocalDateTime> repository;
     private final SchedulerConfig config;
     private final Class<? extends Job> jobClass;
     private final Scheduler quartzScheduler;
@@ -38,14 +38,13 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
     private JobHistoryTracker historyTracker;
     private DatabaseStatusUpdater statusUpdater;
     private static final String SCHEDULER_INSTANCE_KEY = "scheduler_instance";
-    
+
     public InfiniteScheduler(Class<TEntity> entityClass,
-                           Class<TKey> keyClass,
                            SchedulerConfig config,
                            Class<? extends Job> jobClass) throws SchedulerException {
         this.config = config;
         this.jobClass = jobClass;
-        this.repository = createRepository(entityClass, keyClass);
+        this.repository = createRepository(entityClass);
         
         // Initialize Quartz tables if needed
         if (config.isAutoCreateTables()) {
@@ -88,7 +87,7 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
      * @deprecated Use the constructor that accepts entity class and configuration instead
      */
     @Deprecated
-    public InfiniteScheduler(ShardingRepository<TEntity, TKey> repository, 
+    public InfiniteScheduler(ShardingRepository<TEntity, LocalDateTime> repository,
                            SchedulerConfig config,
                            Class<? extends Job> jobClass) throws SchedulerException {
         this.repository = repository;
@@ -131,11 +130,10 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
             config.isAutoCleanupCompletedJobs() ? config.getCleanupIntervalMinutes() + "min" : "disabled");
     }
     
-    private ShardingRepository<TEntity, TKey> createRepository(Class<TEntity> entityClass, 
-                                                              Class<TKey> keyClass) {
+    private ShardingRepository<TEntity, LocalDateTime> createRepository(Class<TEntity> entityClass) {
         try {
             // Create repository builder using the configuration from SchedulerConfig
-            var repositoryBuilder = GenericMultiTableRepository.<TEntity, TKey>builder(entityClass, keyClass)
+            var repositoryBuilder = GenericMultiTableRepository.<TEntity, LocalDateTime>builder(entityClass)
                 .database(config.getRepositoryDatabase())
                 .tablePrefix(config.getRepositoryTablePrefix())
                 .host(config.getMysqlHost())
@@ -387,7 +385,7 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
             // IMPORTANT: Mark entities as scheduled immediately after fetching to prevent re-fetching
             for (TEntity entity : entities) {
                 try {
-                    statusUpdater.markAsScheduled((Long) entity.getId(), entity.getScheduledTime(), 
+                    statusUpdater.markAsScheduled(entity.getId(), entity.getScheduledTime(),
                         config.getRepositoryTablePrefix());
                     entity.setScheduled(true); // Update in memory as well
                     logger.info("✅ Marked entity {} as scheduled=1 in database", entity.getId());
@@ -479,7 +477,7 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
         return config;
     }
     
-    public ShardingRepository<TEntity, TKey> getRepository() {
+    public ShardingRepository<TEntity, LocalDateTime> getRepository() {
         return repository;
     }
     
@@ -488,9 +486,9 @@ public class InfiniteScheduler<TEntity extends SchedulableEntity<TKey> & Shardin
     }
     
     @SuppressWarnings("unchecked")
-    public static <T extends SchedulableEntity<K>, K> InfiniteScheduler<T, K> getFromContext(SchedulerContext context) 
+    public static <T extends SchedulableEntity> InfiniteScheduler<T> getFromContext(SchedulerContext context)
             throws SchedulerException {
-        return (InfiniteScheduler<T, K>) context.get(SCHEDULER_INSTANCE_KEY);
+        return (InfiniteScheduler<T>) context.get(SCHEDULER_INSTANCE_KEY);
     }
     
     /**

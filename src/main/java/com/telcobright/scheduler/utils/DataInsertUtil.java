@@ -41,8 +41,8 @@ public class DataInsertUtil {
             .build();
         
         // Create scheduler (just for repository access)
-        InfiniteScheduler<SmsEntity, Long> scheduler = 
-            new InfiniteScheduler<>(SmsEntity.class, Long.class, config, SmsJob.class);
+        InfiniteScheduler<SmsEntity> scheduler = 
+            new InfiniteScheduler<>(SmsEntity.class, config, SmsJob.class);
         
         LocalDateTime now = LocalDateTime.now();
         logger.info("Current time: {}", now.format(formatter));
@@ -71,7 +71,6 @@ public class DataInsertUtil {
             LocalDateTime scheduledTime = now.plusSeconds(i * 20);
             
             SmsEntity smsEntity = new SmsEntity();
-            smsEntity.setId((long) (System.currentTimeMillis() + i)); // Unique ID based on timestamp
             smsEntity.setPhoneNumber(phoneNumbers[i]);
             smsEntity.setMessage(messages[i]);
             smsEntity.setStatus("PENDING");
@@ -110,13 +109,12 @@ public class DataInsertUtil {
             .repositoryTablePrefix("sms_now")
             .build();
         
-        InfiniteScheduler<SmsEntity, Long> scheduler = 
-            new InfiniteScheduler<>(SmsEntity.class, Long.class, config, SmsJob.class);
+        InfiniteScheduler<SmsEntity> scheduler = 
+            new InfiniteScheduler<>(SmsEntity.class, config, SmsJob.class);
         
         LocalDateTime now = LocalDateTime.now();
         
         SmsEntity smsEntity = new SmsEntity();
-        smsEntity.setId(System.currentTimeMillis());
         smsEntity.setPhoneNumber("+1555999999");
         smsEntity.setMessage("⚡ IMMEDIATE: This SMS executes RIGHT NOW at " + now.format(formatter));
         smsEntity.setStatus("PENDING");

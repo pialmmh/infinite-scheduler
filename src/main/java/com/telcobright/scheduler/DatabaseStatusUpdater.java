@@ -25,14 +25,14 @@ public class DatabaseStatusUpdater {
     /**
      * Updates the scheduled column to 1 when a job is picked up by scheduler
      */
-    public void markAsScheduled(Long entityId, LocalDateTime scheduledTime, String tablePrefix) {
+    public void markAsScheduled(String entityId, LocalDateTime scheduledTime, String tablePrefix) {
         String tableName = buildTableName(tablePrefix, scheduledTime);
         String sql = "UPDATE " + tableName + " SET scheduled = 1 WHERE id = ?";
-        
+
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setLong(1, entityId);
+
+            stmt.setString(1, entityId);
             
             int updated = stmt.executeUpdate();
             if (updated > 0) {

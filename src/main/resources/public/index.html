@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Scheduler - Job Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1400px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dashboard-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .panel-header h2 {
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .panel-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .job-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .job-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .job-param {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .job-param-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .job-item:hover {
+            background: #f8f9fa;
+        }
+
+        .job-item:last-child {
+            border-bottom: none;
+        }
+
+        .job-id {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #667eea;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .job-details {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .job-time {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-scheduled {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-started {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-failed {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .auto-refresh {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            margin-top: 5px;
+        }
+
+        .duration {
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Infinite Scheduler - Job Monitor</h1>
+        <p>Real-time job scheduling and execution tracking</p>
+        <div class="auto-refresh">⟳ Auto-refreshing every 3 seconds</div>
+    </div>
+
+    <div class="container">
+        <!-- Left Column: Dashboard Stats -->
+        <div class="dashboard-column">
+            <div class="stat-card">
+                <h3>TOTAL JOBS</h3>
+                <div class="number" id="stat-total">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>SCHEDULED</h3>
+                <div class="number" id="stat-scheduled">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>COMPLETED</h3>
+                <div class="number" id="stat-completed">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>FAILED</h3>
+                <div class="number" id="stat-failed">-</div>
+            </div>
+        </div>
+
+        <!-- Middle Column: Scheduled Jobs -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>
+                    📅 Scheduled Jobs
+                    <span class="badge" id="scheduled-count">0</span>
+                </h2>
+            </div>
+            <div class="panel-body" id="scheduled-jobs">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Right Column: Job History -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>
+                    📜 Job History
+                    <span class="badge" id="history-count">0</span>
+                </h2>
+            </div>
+            <div class="panel-body" id="history-jobs">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch and update stats
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/jobs/stats');
+                const stats = await response.json();
+
+                document.getElementById('stat-total').textContent = stats.totalJobs || 0;
+                document.getElementById('stat-scheduled').textContent = stats.statusCounts?.SCHEDULED || 0;
+                document.getElementById('stat-completed').textContent = stats.statusCounts?.COMPLETED || 0;
+                document.getElementById('stat-failed').textContent = stats.statusCounts?.FAILED || 0;
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        // Fetch and update scheduled jobs
+        async function updateScheduledJobs() {
+            try {
+                const response = await fetch('/api/jobs/scheduled');
+                const jobs = await response.json();
+
+                const container = document.getElementById('scheduled-jobs');
+                document.getElementById('scheduled-count').textContent = jobs.length;
+
+                if (jobs.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                            <p>No scheduled jobs</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = jobs.map(job => `
+                    <div class="job-item">
+                        <div class="job-name">${job.jobName || 'Unnamed Job'}</div>
+                        <div class="job-param">
+                            <span class="job-param-label">Job ID:</span> ${job.jobId}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Group:</span> ${job.jobGroup || 'N/A'}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Entity ID:</span> ${job.entityId || 'N/A'}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Scheduled:</span> ${formatDateTime(job.scheduledTime)}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Status:</span>
+                            <span class="status-badge status-${job.status.toLowerCase()}">${job.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching scheduled jobs:', error);
+                document.getElementById('scheduled-jobs').innerHTML =
+                    '<div class="empty-state"><p>Error loading jobs</p></div>';
+            }
+        }
+
+        // Fetch and update job history
+        async function updateJobHistory() {
+            try {
+                const response = await fetch('/api/jobs/history');
+                const jobs = await response.json();
+
+                const container = document.getElementById('history-jobs');
+                document.getElementById('history-count').textContent = jobs.length;
+
+                if (jobs.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                            <p>No job history</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = jobs.map(job => `
+                    <div class="job-item">
+                        <div class="job-name">${job.jobName || 'Unnamed Job'}</div>
+                        <div class="job-param">
+                            <span class="job-param-label">Job ID:</span> ${job.jobId}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Group:</span> ${job.jobGroup || 'N/A'}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Entity ID:</span> ${job.entityId || 'N/A'}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Scheduled:</span> ${formatDateTime(job.scheduledTime)}
+                        </div>
+                        <div class="job-param">
+                            <span class="job-param-label">Completed:</span> ${formatDateTime(job.completedAt)}
+                        </div>
+                        ${job.executionDurationMs ?
+                            `<div class="job-param">
+                                <span class="job-param-label">Duration:</span> ${job.executionDurationMs}ms
+                            </div>` : ''}
+                        <div class="job-param">
+                            <span class="job-param-label">Status:</span>
+                            <span class="status-badge status-${job.status.toLowerCase()}">${job.status}</span>
+                        </div>
+                        ${job.errorMessage ? `<div class="job-param" style="color: #d32f2f;">
+                            <span class="job-param-label">Error:</span> ${job.errorMessage}
+                        </div>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching job history:', error);
+                document.getElementById('history-jobs').innerHTML =
+                    '<div class="empty-state"><p>Error loading history</p></div>';
+            }
+        }
+
+        // Format datetime
+        function formatDateTime(dateStr) {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        // Update all data
+        function updateAll() {
+            updateStats();
+            updateScheduledJobs();
+            updateJobHistory();
+        }
+
+        // Initial load
+        updateAll();
+
+        // Auto-refresh every 3 seconds
+        setInterval(updateAll, 3000);
+    </script>
+</body>
+</html>

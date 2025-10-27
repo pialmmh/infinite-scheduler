@@ -33,12 +33,12 @@ public class SmsJob implements Job {
             
             // Get scheduler instance from context to access repository
             @SuppressWarnings("unchecked")
-            InfiniteScheduler<SmsEntity, Long> scheduler = 
+            InfiniteScheduler<SmsEntity> scheduler =
                 InfiniteScheduler.getFromContext(context.getScheduler().getContext());
-            
-            // Parse entity ID
-            Long entityId = Long.parseLong(entityIdStr);
-            
+
+            // Entity ID is already a String (UUID)
+            String entityId = entityIdStr;
+
             // Get the entity from repository
             SmsEntity smsEntity = scheduler.getRepository().findById(entityId);
             
