@@ -24,11 +24,29 @@ A high-performance, scalable job scheduling system built on Quartz Scheduler wit
   - [Timeline Diagram](#timeline-diagram---how-fetch-interval--lookahead-work)
   - [Detailed How It Works](#detailed-how-it-works)
   - [Duplicate Detection & Cleanup](#duplicate-detection--cleanup)
+- [How to Run](#how-to-run)
+  - [Option 1: Command Line (Maven)](#option-1-command-line-maven)
+  - [Option 2: IntelliJ IDEA](#option-2-intellij-idea)
+  - [Option 3: Background Process](#option-3-background-process)
+  - [Access the Web UI](#access-the-web-ui)
+- [Multi-App Architecture](#multi-app-architecture)
+  - [AppConfig Example](#appconfig-example)
+- [Queue-Based Execution Model](#queue-based-execution-model)
+  - [Queue Types](#queue-types)
+  - [Queue Configuration](#queue-configuration)
+  - [Message Payload](#message-payload)
+  - [Universal Job Execution](#universal-job-execution)
+- [REST API Usage](#rest-api-usage)
+  - [Get Scheduled Jobs](#get-scheduled-jobs)
+  - [Get Job History](#get-job-history)
+  - [Get Job Statistics](#get-job-statistics)
+  - [API Endpoints Summary](#api-endpoints-summary)
+  - [Using with Scripts](#using-with-scripts)
+- [Testing with Console Output](#testing-with-console-output)
+- [Implementing Real Queue Producers](#implementing-real-queue-producers)
 - [Examples](#examples)
 - [Performance & Monitoring](#performance--monitoring)
-- [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
-- [API Reference](#api-reference)
 
 ## Overview
 
@@ -413,6 +431,362 @@ mvn package
 - **MySQL**: 8.0+ or MariaDB 10.6+
 - **Memory**: Minimum 4GB heap for production
 - **partitioned-repo**: Available via Maven repository (automatically downloaded)
+
+## How to Run
+
+### Option 1: Command Line (Maven)
+
+```bash
+# Compile the project
+mvn clean compile
+
+# Run the scheduler with UI
+mvn exec:java -Dexec.mainClass="com.telcobright.scheduler.examples.MultiAppSchedulerWithUI"
+```
+
+### Option 2: IntelliJ IDEA
+
+1. **Open Project**: File → Open → Navigate to project directory
+2. **Navigate to**: `src/main/java/com/telcobright/scheduler/examples/MultiAppSchedulerWithUI.java`
+3. **Run**: Right-click → Run 'MultiAppSchedulerWithUI.main()'
+   - Or click the green ▶️ icon next to the main method
+
+### Option 3: Background Process
+
+```bash
+# Run in background
+nohup mvn exec:java -Dexec.mainClass="com.telcobright.scheduler.examples.MultiAppSchedulerWithUI" -Dexec.cleanupDaemonThreads=false > scheduler.log 2>&1 &
+
+# Check logs
+tail -f scheduler.log
+
+# Stop the process
+pkill -f "MultiAppSchedulerWithUI"
+```
+
+### Access the Web UI
+
+Once running, open your browser:
+```
+http://localhost:7070/index.html
+```
+
+The UI shows:
+- **Scheduled Jobs**: Currently scheduled jobs waiting to execute
+- **Job History**: Completed and failed jobs with execution details
+- **Job Stats**: Real-time statistics and counts
+- **Queue Configuration**: Queue type, topic name, and broker address for each job
+
+## Multi-App Architecture
+
+The scheduler supports multiple independent applications in a single instance:
+
+```java
+// Create the multi-app manager
+MultiAppSchedulerManager manager = new MultiAppSchedulerManager(dataSource);
+
+// Register multiple applications
+manager.registerApp(smsConfig, new SmsJobHandler());
+manager.registerApp(sipCallConfig, new SipCallJobHandler());
+manager.registerApp(paymentConfig, new PaymentGatewayJobHandler());
+
+// Start all schedulers
+manager.startAll();
+
+// Each app has its own:
+// - Repository (with table prefix)
+// - Fetch thread
+// - Queue configuration
+// - Job history table
+```
+
+### AppConfig Example
+
+```java
+AppConfig smsConfig = AppConfig.builder("sms")
+    .tablePrefix("sms_scheduled_jobs")
+    .historyTableName("sms_job_execution_history")
+    .fetchIntervalSeconds(5)
+    .lookaheadWindowSeconds(30)
+    .queueConfig(queueConfig)  // Queue configuration
+    .build();
+```
+
+## Queue-Based Execution Model
+
+Jobs **do not execute business logic** directly. Instead, they **produce messages to queue topics**.
+
+### Queue Types
+
+- **CONSOLE**: Mock/testing output (prints to console)
+- **KAFKA**: Apache Kafka topics (requires implementation)
+- **REDIS**: Redis queues (requires implementation)
+
+### Queue Configuration
+
+```java
+// Console output (for testing)
+QueueConfig queueConfig = QueueConfig.builder()
+    .queueType(QueueConfig.QueueType.CONSOLE)
+    .topicName("sms-notifications")
+    .brokerAddress("")  // Empty for console
+    .build();
+
+// Kafka (requires KafkaQueueProducer implementation)
+QueueConfig kafkaConfig = QueueConfig.builder()
+    .queueType(QueueConfig.QueueType.KAFKA)
+    .topicName("sms-notifications")
+    .brokerAddress("localhost:9092")
+    .build();
+
+// Redis (requires RedisQueueProducer implementation)
+QueueConfig redisConfig = QueueConfig.builder()
+    .queueType(QueueConfig.QueueType.REDIS)
+    .topicName("sipcall-queue")
+    .brokerAddress("localhost:6379")
+    .build();
+```
+
+### Message Payload
+
+When a job executes, it produces a message to the configured topic:
+
+```json
+{
+  "jobId": "sms-job-123",
+  "appName": "sms",
+  "entityId": "uuid-here",
+  "executionTime": "2025-10-28T04:05:03.925087875",
+  "queueType": "CONSOLE",
+  "topicName": "sms-notifications",
+  "jobParams": {
+    "phoneNumber": "+8801710000001",
+    "message": "Your message here",
+    "priority": "NORMAL",
+    "scheduledTime": "2025-10-28T04:05:03.901939568"
+  }
+}
+```
+
+### Universal Job Execution
+
+All jobs use the same execution logic (`GenericJob.java`):
+
+1. Extract queue configuration from job data
+2. Get queue producer from factory
+3. Build message payload with job parameters
+4. Send message to topic
+5. Return success/failure
+
+**No app-specific code** - just message production!
+
+## REST API Usage
+
+### Get Scheduled Jobs
+
+```bash
+# Get all scheduled jobs (up to 100)
+curl http://localhost:7070/api/jobs/scheduled | jq
+
+# Response
+[
+  {
+    "id": 123,
+    "jobId": "sms-job-5",
+    "jobName": "sms-job-5",
+    "jobGroup": "sms",
+    "appName": "sms",
+    "entityId": "uuid-here",
+    "scheduledTime": "2025-10-28 04:10:15.0",
+    "status": "SCHEDULED",
+    "queueType": "CONSOLE",
+    "topicName": "sms-notifications",
+    "brokerAddress": "",
+    "createdAt": "2025-10-28 04:05:03.0"
+  }
+]
+```
+
+### Get Job History
+
+```bash
+# Get recent completed/failed jobs
+curl http://localhost:7070/api/jobs/history?limit=10 | jq
+
+# Response
+[
+  {
+    "id": 456,
+    "jobId": "payment-job-3",
+    "jobName": "payment-job-3",
+    "jobGroup": "payment_gateway",
+    "appName": "payment_gateway",
+    "entityId": "uuid-here",
+    "scheduledTime": "2025-10-28 04:05:17.0",
+    "startedAt": "2025-10-28 04:05:17.0",
+    "completedAt": "2025-10-28 04:05:18.0",
+    "executionDurationMs": 150,
+    "status": "COMPLETED",
+    "errorMessage": null,
+    "queueType": "CONSOLE",
+    "topicName": "payment-transactions",
+    "brokerAddress": ""
+  }
+]
+```
+
+### Get Job Statistics
+
+```bash
+# Get overall job statistics
+curl http://localhost:7070/api/jobs/stats | jq
+
+# Response
+{
+  "totalJobs": 1547,
+  "statusCounts": {
+    "SCHEDULED": 12,
+    "COMPLETED": 1520,
+    "FAILED": 15
+  }
+}
+```
+
+### API Endpoints Summary
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/jobs/scheduled` | GET | Get all scheduled and started jobs |
+| `/api/jobs/history?limit=N` | GET | Get completed/failed jobs (default limit: 100) |
+| `/api/jobs/stats` | GET | Get job statistics by status |
+
+### Using with Scripts
+
+```bash
+# Monitor scheduled jobs count
+watch -n 2 'curl -s http://localhost:7070/api/jobs/scheduled | jq "length"'
+
+# Get failed jobs only
+curl -s http://localhost:7070/api/jobs/history | jq '.[] | select(.status=="FAILED")'
+
+# Export job history to file
+curl -s http://localhost:7070/api/jobs/history?limit=1000 > job-history.json
+
+# Check if specific job completed
+curl -s http://localhost:7070/api/jobs/history | jq '.[] | select(.jobId=="sms-job-123")'
+```
+
+## Testing with Console Output
+
+The system includes a mock queue producer for testing without Kafka/Redis:
+
+```java
+// Jobs will print to console
+QueueConfig consoleConfig = QueueConfig.builder()
+    .queueType(QueueConfig.QueueType.CONSOLE)
+    .topicName("test-topic")
+    .brokerAddress("")
+    .build();
+```
+
+**Console Output:**
+```
+================================================================================
+📤 MOCK QUEUE MESSAGE PRODUCED @ 04:05:03.925
+================================================================================
+Queue Type: CONSOLE
+Topic Name: sms-notifications
+Broker:
+--------------------------------------------------------------------------------
+Message Payload:
+{
+  "executionTime": "2025-10-28T04:05:03.925087875",
+  "jobId": "sms-job-1",
+  "appName": "sms",
+  "queueType": "CONSOLE",
+  "topicName": "sms-notifications",
+  "jobParams": { ... }
+}
+================================================================================
+```
+
+## Implementing Real Queue Producers
+
+To implement Kafka or Redis producers:
+
+1. **Create Producer Class** (e.g., `KafkaQueueProducer.java`):
+```java
+public class KafkaQueueProducer implements QueueProducer {
+    private KafkaProducer<String, String> producer;
+
+    @Override
+    public void initialize(QueueConfig config) {
+        // Initialize Kafka producer with config.getBrokerAddress()
+    }
+
+    @Override
+    public boolean send(String topicName, Map<String, Object> message) {
+        // Send message to Kafka topic
+    }
+
+    @Override
+    public void close() {
+        // Close Kafka producer
+    }
+
+    @Override
+    public QueueConfig.QueueType getType() {
+        return QueueConfig.QueueType.KAFKA;
+    }
+}
+```
+
+2. **Update QueueProducerFactory**:
+```java
+case KAFKA:
+    producer = new KafkaQueueProducer();  // Use real implementation
+    break;
+```
+
+## Troubleshooting
+
+### Jobs Not Executing
+
+**Check Quartz tables:**
+```sql
+SELECT COUNT(*) FROM QRTZ_JOB_DETAILS;
+SELECT COUNT(*) FROM QRTZ_TRIGGERS;
+```
+
+**Check job history:**
+```sql
+SELECT * FROM sms_job_execution_history ORDER BY created_at DESC LIMIT 10;
+```
+
+### Clean Test Data
+
+```sql
+-- Clean Quartz tables
+DELETE FROM QRTZ_SIMPLE_TRIGGERS;
+DELETE FROM QRTZ_TRIGGERS;
+DELETE FROM QRTZ_JOB_DETAILS;
+
+-- Clean job history
+DELETE FROM sms_job_execution_history;
+DELETE FROM sipcall_job_execution_history;
+DELETE FROM payment_gateway_job_execution_history;
+```
+
+### Port Already in Use
+
+If port 7070 is in use:
+```bash
+# Find process using port 7070
+lsof -i :7070
+
+# Kill the process
+kill -9 <PID>
+```
 
 ## License
 
