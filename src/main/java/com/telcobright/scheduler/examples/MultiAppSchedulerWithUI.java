@@ -97,6 +97,18 @@ public class MultiAppSchedulerWithUI {
         logger.info("   - Payment: every 12 seconds");
         logger.info("🌐 Web UI: http://localhost:7070/index.html");
         logger.info("⏰ Press Ctrl+C to stop");
+        logger.info("");
+        logger.info("╔════════════════════════════════════════════════════════════════════╗");
+        logger.info("║  ✅ INFINITE SCHEDULER STARTED SUCCESSFULLY                        ║");
+        logger.info("║                                                                    ║");
+        logger.info("║  Multi-App Architecture: 3 apps (SMS, SIPCall, Payment)           ║");
+        logger.info("║  Queue Type: CONSOLE (Mock for testing)                           ║");
+        logger.info("║  Web UI: http://localhost:7070/index.html                         ║");
+        logger.info("║  REST API: http://localhost:7070/api/*                            ║");
+        logger.info("║  Database: {}:{}/{}                       ║", MYSQL_HOST, MYSQL_PORT, MYSQL_DATABASE);
+        logger.info("║  Status: RUNNING - Ready to schedule jobs                         ║");
+        logger.info("╚════════════════════════════════════════════════════════════════════╝");
+        logger.info("");
 
         // Add shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
