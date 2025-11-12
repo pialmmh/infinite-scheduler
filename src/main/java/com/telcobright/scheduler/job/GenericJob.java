@@ -97,7 +97,7 @@ public class GenericJob implements Job {
 
         } catch (Exception e) {
             long duration = System.currentTimeMillis() - startTime;
-            logger.error("❌ Error executing job '{}' for app '{}': {}", jobName, appName, e.getMessage());
+            logger.error("❌ Error executing job '{}' for app '{}'", jobName, appName, e);
             throw new JobExecutionException("Job execution failed: " + e.getMessage(), e);
         }
     }

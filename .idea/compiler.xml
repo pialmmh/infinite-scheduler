@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="infinite-scheduler" options="--enable-preview" />
+      <module name="infinite-scheduler" options="-parameters --enable-preview" />
     </option>
   </component>
 </project>

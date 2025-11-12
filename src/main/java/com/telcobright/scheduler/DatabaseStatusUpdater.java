@@ -42,7 +42,7 @@ public class DatabaseStatusUpdater {
             }
             
         } catch (SQLException e) {
-            logger.error("Failed to mark entity {} as scheduled in table {}: {}", entityId, tableName, e.getMessage());
+            logger.error("Failed to mark entity {} as scheduled in table {}", entityId, tableName, e);
         }
     }
     

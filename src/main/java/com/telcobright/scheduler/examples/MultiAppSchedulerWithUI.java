@@ -35,11 +35,12 @@ public class MultiAppSchedulerWithUI {
     private static final AtomicInteger sipCallCounter = new AtomicInteger(0);
     private static final AtomicInteger paymentCounter = new AtomicInteger(0);
 
-    private static final String MYSQL_HOST = "127.0.0.1";
-    private static final int MYSQL_PORT = 3306;
-    private static final String MYSQL_DATABASE = "scheduler";
-    private static final String MYSQL_USERNAME = "root";
-    private static final String MYSQL_PASSWORD = "123456";
+    // Database configuration - can be overridden via system properties
+    private static final String MYSQL_HOST = System.getProperty("db.host", "127.0.0.1");
+    private static final int MYSQL_PORT = Integer.parseInt(System.getProperty("db.port", "3306"));
+    private static final String MYSQL_DATABASE = System.getProperty("db.name", "scheduler");
+    private static final String MYSQL_USERNAME = System.getProperty("db.user", "root");
+    private static final String MYSQL_PASSWORD = System.getProperty("db.password", "123456");
 
     public static void main(String[] args) throws Exception {
         logger.info("=== Multi-App Scheduler with Web UI ===" );
@@ -55,7 +56,8 @@ public class MultiAppSchedulerWithUI {
         // Start web UI
         DataSource dataSource = createDataSource();
         JobStatusApi api = new JobStatusApi(dataSource);
-        api.start(7070);
+        int webPort = Integer.parseInt(System.getProperty("web.port", "7070"));
+        api.start(webPort);
 
         // Start all schedulers
         manager.startAll();

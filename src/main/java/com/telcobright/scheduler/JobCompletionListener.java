@@ -106,7 +106,7 @@ public class JobCompletionListener implements JobListener {
             }
 
         } catch (SQLException e) {
-            logger.error("Failed to update job status: {}", e.getMessage());
+            logger.error("Failed to update job status", e);
         }
     }
 }
