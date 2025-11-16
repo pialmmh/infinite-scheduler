@@ -1,0 +1,120 @@
+# Example Tenant - Production Profile
+# Production environment settings for Example tenant
+
+infinite-scheduler:
+  tenant:
+    name: "example"
+    profile: "prod"
+    description: "Example tenant for production deployment"
+    enabled: true
+
+  # MySQL Database Configuration
+  mysql:
+    host: "10.10.199.10"
+    port: 3306
+    database: "scheduler_example_prod"
+    username: "scheduler_user"
+    password: "${MYSQL_PASSWORD:change_me_in_production}"
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: "10.10.199.20:9092,10.10.198.20:9092,10.10.197.20:9092"
+
+    # Ingest Configuration
+    ingest:
+      enabled: true  # Enabled in production
+      topic: "Job_Schedule_Example"
+      dlq-topic: "Job_Schedule_Example_DLQ"
+      max-retries: 3
+      poll-timeout-ms: 1000
+
+    # Consumer Configuration
+    consumer:
+      group-id: "infinite-scheduler-example-prod"
+      enable-auto-commit: false
+      auto-offset-reset: "earliest"
+      max-poll-records: 500
+
+  # Repository Configuration (Split-Verse)
+  repository:
+    database: "scheduler_example_prod"
+    table-prefix: "scheduled_jobs"
+    retention-days: 30  # Production retention
+
+  # Fetcher Configuration
+  fetcher:
+    enabled: true
+    interval-seconds: 25
+    lookahead-seconds: 30
+    max-jobs-per-fetch: 10000  # Higher limit for production
+
+  # Cleanup Configuration
+  cleanup:
+    enabled: true
+    interval-hours: 24
+    batch-size: 1000
+
+  # Quartz Scheduler Configuration
+  quartz:
+    thread-pool-size: 20  # Production thread pool
+    misfire-threshold-ms: 60000
+
+  # Web UI Configuration
+  web:
+    enabled: true
+    host: "0.0.0.0"
+    port: 7070
+
+  # Monitoring Configuration
+  monitoring:
+    metrics-enabled: true
+    health-enabled: true
+    logging-level: "INFO"
+    log-file: "/var/log/infinite-scheduler/example-prod.log"
+
+# Quarkus Configuration Overrides for this tenant
+quarkus:
+  http:
+    port: 7070
+
+  datasource:
+    db-kind: mysql
+    username: "scheduler_user"
+    password: "${MYSQL_PASSWORD:change_me_in_production}"
+    jdbc:
+      url: "jdbc:mysql://10.10.199.10:3306/scheduler_example_prod?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      min-size: 10
+      max-size: 50
+      initial-size: 10
+      acquisition-timeout: 30s
+      leak-detection-interval: 60s
+      max-lifetime: 4m
+      idle-timeout: 3m
+      validation-query-sql: "SELECT 1"
+
+  log:
+    level: INFO
+    category:
+      "com.telcobright.scheduler": INFO
+      "org.quartz": WARN
+
+# SmallRye Reactive Messaging Configuration
+mp:
+  messaging:
+    incoming:
+      job-schedule:
+        connector: smallrye-kafka
+        topic: "Job_Schedule_Example"
+        bootstrap.servers: "10.10.199.20:9092,10.10.198.20:9092,10.10.197.20:9092"
+        group.id: "infinite-scheduler-example-prod"
+        enable.auto.commit: false
+        auto.offset.reset: earliest
+        max.poll.records: 500
+
+    outgoing:
+      sms-send:
+        connector: smallrye-kafka
+        topic: "SMS_Send_Example"
+        bootstrap.servers: "10.10.199.20:9092,10.10.198.20:9092,10.10.197.20:9092"
+        acks: all
+        enable.idempotence: true

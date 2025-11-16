@@ -1,6 +1,13 @@
-com/telcobright/scheduler/SchedulerConfigTest.class
+com/telcobright/scheduler/kafka/KafkaIntegrationTest.class
 com/telcobright/scheduler/TableCreationTest.class
-com/telcobright/scheduler/QuartzTableCreationTest.class
+com/telcobright/scheduler/KafkaOutputVerifier.class
+com/telcobright/scheduler/kafka/ScheduleJobRequestTest.class
+com/telcobright/scheduler/OneHourMockLoadTest.class
+com/telcobright/scheduler/kafka/KafkaIngestConfigTest.class
 com/telcobright/scheduler/SimpleTimezoneTest.class
+com/telcobright/scheduler/OneHourMockLoadTest$DatabaseStatsChecker.class
+com/telcobright/scheduler/OneHourLoadTest.class
+com/telcobright/scheduler/SchedulerConfigTest.class
+com/telcobright/scheduler/QuartzTableCreationTest.class
 com/telcobright/scheduler/MonitoringDemoTest.class
 com/telcobright/scheduler/SmsJobTest.class

@@ -245,6 +245,80 @@
             color: #666;
             font-size: 12px;
         }
+
+        .full-width-panel {
+            margin-top: 20px;
+        }
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .table-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+
+        .table-card.old {
+            border-left-color: #f57c00;
+        }
+
+        .table-card.very-old {
+            border-left-color: #d32f2f;
+        }
+
+        .table-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .table-info {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .table-info-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .age-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .age-current {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .age-recent {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .age-old {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .age-very-old {
+            background: #ffebee;
+            color: #d32f2f;
+        }
     </style>
 </head>
 <body>
@@ -309,6 +383,19 @@
                 <span class="pagination-info" id="history-page-info">Page 1</span>
                 <button id="history-next" onclick="nextHistoryPage()">Next →</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Full-width Split-Verse Tables Panel -->
+    <div class="full-width-panel panel">
+        <div class="panel-header">
+            <h2>
+                🗄️ Split-Verse Tables
+                <span class="badge" id="tables-count">0</span>
+            </h2>
+        </div>
+        <div id="tables-container">
+            <div class="loading">Loading tables...</div>
         </div>
     </div>
 
@@ -540,11 +627,113 @@
             });
         }
 
+        // Fetch and display Split-Verse tables
+        async function updateTables() {
+            try {
+                const response = await fetch('/api/tables');
+                const data = await response.json();
+
+                document.getElementById('tables-count').textContent = data.tableCount || 0;
+
+                const container = document.getElementById('tables-container');
+
+                if (!data.tables || data.tables.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            </svg>
+                            <p>No Split-Verse tables found</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Calculate age for each table
+                const now = new Date();
+                const tablesWithAge = data.tables.map(table => {
+                    const createDate = new Date(table.createTime);
+                    const ageInDays = Math.floor((now - createDate) / (1000 * 60 * 60 * 24));
+                    let ageClass = 'age-current';
+                    let ageText = 'Today';
+                    let cardClass = '';
+
+                    if (ageInDays === 0) {
+                        ageClass = 'age-current';
+                        ageText = 'Today';
+                    } else if (ageInDays === 1) {
+                        ageClass = 'age-recent';
+                        ageText = 'Yesterday';
+                    } else if (ageInDays <= 3) {
+                        ageClass = 'age-recent';
+                        ageText = `${ageInDays} days old`;
+                    } else if (ageInDays <= 7) {
+                        ageClass = 'age-old';
+                        ageText = `${ageInDays} days old`;
+                        cardClass = 'old';
+                    } else {
+                        ageClass = 'age-very-old';
+                        ageText = `${ageInDays} days old`;
+                        cardClass = 'very-old';
+                    }
+
+                    return { ...table, ageInDays, ageClass, ageText, cardClass };
+                });
+
+                // Render tables as cards
+                container.innerHTML = `
+                    <div class="tables-grid">
+                        ${tablesWithAge.map(table => `
+                            <div class="table-card ${table.cardClass}">
+                                <div class="table-name">
+                                    ${table.tableName}
+                                    <span class="${table.ageClass} age-badge">${table.ageText}</span>
+                                </div>
+                                <div class="table-info">
+                                    <span class="table-info-label">Created:</span>
+                                    ${formatDateTime(table.createTime)}
+                                </div>
+                                <div class="table-info">
+                                    <span class="table-info-label">Rows:</span>
+                                    ${table.rowCount.toLocaleString()}
+                                </div>
+                                <div class="table-info">
+                                    <span class="table-info-label">Size:</span>
+                                    ${table.totalSizeMB} MB
+                                </div>
+                                ${table.tableDate ? `
+                                    <div class="table-info">
+                                        <span class="table-info-label">Date:</span>
+                                        ${formatTableDate(table.tableDate)}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error fetching tables:', error);
+                document.getElementById('tables-container').innerHTML =
+                    '<div class="empty-state"><p>Error loading tables</p></div>';
+            }
+        }
+
+        // Format table date from YYYYMMDD
+        function formatTableDate(dateStr) {
+            if (!dateStr || dateStr.length !== 8) return dateStr;
+            const year = dateStr.substring(0, 4);
+            const month = dateStr.substring(4, 6);
+            const day = dateStr.substring(6, 8);
+            return `${year}-${month}-${day}`;
+        }
+
         // Update all data
         function updateAll() {
             updateStats();
             updateScheduledJobs();
             updateJobHistory();
+            updateTables();
         }
 
         // Initial load

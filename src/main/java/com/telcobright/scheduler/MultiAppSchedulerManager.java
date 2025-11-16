@@ -6,6 +6,8 @@ import com.telcobright.scheduler.handler.JobHandlerRegistry;
 import com.telcobright.scheduler.handler.impl.PaymentGatewayJobHandler;
 import com.telcobright.scheduler.handler.impl.SipCallJobHandler;
 import com.telcobright.scheduler.handler.impl.SmsJobHandler;
+import com.telcobright.scheduler.kafka.KafkaIngestConfig;
+import com.telcobright.scheduler.kafka.KafkaJobIngestConsumer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.quartz.Scheduler;
@@ -28,15 +30,28 @@ public class MultiAppSchedulerManager {
     private final Scheduler sharedQuartzScheduler;
     private final Map<String, InfiniteAppScheduler> appSchedulers;
     private final QuartzCleanupService cleanupService;
+    private final KafkaJobIngestConsumer kafkaIngestConsumer;
     private final String mysqlHost;
     private final int mysqlPort;
     private final String mysqlDatabase;
     private final String mysqlUsername;
     private final String mysqlPassword;
 
+    /**
+     * Constructor for backwards compatibility.
+     */
     public MultiAppSchedulerManager(String mysqlHost, int mysqlPort,
                                    String mysqlDatabase, String mysqlUsername,
                                    String mysqlPassword) throws SchedulerException {
+        this(mysqlHost, mysqlPort, mysqlDatabase, mysqlUsername, mysqlPassword, null);
+    }
+
+    /**
+     * Constructor with Kafka ingest support.
+     */
+    private MultiAppSchedulerManager(String mysqlHost, int mysqlPort,
+                                    String mysqlDatabase, String mysqlUsername,
+                                    String mysqlPassword, KafkaIngestConfig kafkaConfig) throws SchedulerException {
         this.mysqlHost = mysqlHost;
         this.mysqlPort = mysqlPort;
         this.mysqlDatabase = mysqlDatabase;
@@ -64,7 +79,23 @@ public class MultiAppSchedulerManager {
             .build();
         this.cleanupService = new QuartzCleanupService(dataSource, cleanupConfig);
 
+        // Initialize Kafka ingest consumer if configured
+        if (kafkaConfig != null && kafkaConfig.isEnabled()) {
+            this.kafkaIngestConsumer = new KafkaJobIngestConsumer(kafkaConfig, this);
+            logger.info("Kafka ingest consumer initialized with config: {}", kafkaConfig);
+        } else {
+            this.kafkaIngestConsumer = null;
+            logger.info("Kafka ingest disabled");
+        }
+
         logger.info("MultiAppSchedulerManager initialized with shared Quartz scheduler");
+    }
+
+    /**
+     * Create a builder for MultiAppSchedulerManager.
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -154,6 +185,12 @@ public class MultiAppSchedulerManager {
             entry.getValue().start();
         }
 
+        // Start Kafka ingest consumer if configured
+        if (kafkaIngestConsumer != null) {
+            kafkaIngestConsumer.start();
+            logger.info("Started Kafka ingest consumer");
+        }
+
         logger.info("Started all {} application schedulers", appSchedulers.size());
     }
 
@@ -161,6 +198,12 @@ public class MultiAppSchedulerManager {
      * Stop all schedulers.
      */
     public void stopAll() throws SchedulerException {
+        // Stop Kafka ingest consumer first
+        if (kafkaIngestConsumer != null) {
+            kafkaIngestConsumer.stop();
+            logger.info("Stopped Kafka ingest consumer");
+        }
+
         // Stop all app schedulers
         for (Map.Entry<String, InfiniteAppScheduler> entry : appSchedulers.entrySet()) {
             try {
@@ -250,5 +293,95 @@ public class MultiAppSchedulerManager {
         config.setPoolName("MultiAppScheduler");
 
         return new HikariDataSource(config);
+    }
+
+    /**
+     * Get Kafka ingest consumer (if configured).
+     */
+    public KafkaJobIngestConsumer getKafkaIngestConsumer() {
+        return kafkaIngestConsumer;
+    }
+
+    /**
+     * Builder for MultiAppSchedulerManager with Kafka ingest support.
+     */
+    public static class Builder {
+        private String mysqlHost;
+        private int mysqlPort = 3306;
+        private String mysqlDatabase;
+        private String mysqlUsername;
+        private String mysqlPassword;
+        private KafkaIngestConfig kafkaIngestConfig;
+
+        public Builder mysqlHost(String mysqlHost) {
+            this.mysqlHost = mysqlHost;
+            return this;
+        }
+
+        public Builder mysqlPort(int mysqlPort) {
+            this.mysqlPort = mysqlPort;
+            return this;
+        }
+
+        public Builder mysqlDatabase(String mysqlDatabase) {
+            this.mysqlDatabase = mysqlDatabase;
+            return this;
+        }
+
+        public Builder mysqlUsername(String mysqlUsername) {
+            this.mysqlUsername = mysqlUsername;
+            return this;
+        }
+
+        public Builder mysqlPassword(String mysqlPassword) {
+            this.mysqlPassword = mysqlPassword;
+            return this;
+        }
+
+        /**
+         * Enable Kafka job ingestion with custom configuration.
+         */
+        public Builder withKafkaIngest(KafkaIngestConfig kafkaIngestConfig) {
+            this.kafkaIngestConfig = kafkaIngestConfig;
+            return this;
+        }
+
+        /**
+         * Enable Kafka job ingestion with default configuration.
+         */
+        public Builder withKafkaIngest(String bootstrapServers, String topic) {
+            this.kafkaIngestConfig = KafkaIngestConfig.builder()
+                .bootstrapServers(bootstrapServers)
+                .topic(topic)
+                .build();
+            return this;
+        }
+
+        /**
+         * Enable Kafka job ingestion with default configuration (localhost:9092).
+         */
+        public Builder withKafkaIngest() {
+            this.kafkaIngestConfig = KafkaIngestConfig.builder().build();
+            return this;
+        }
+
+        public MultiAppSchedulerManager build() throws SchedulerException {
+            if (mysqlHost == null || mysqlHost.trim().isEmpty()) {
+                throw new IllegalArgumentException("mysqlHost is required");
+            }
+            if (mysqlDatabase == null || mysqlDatabase.trim().isEmpty()) {
+                throw new IllegalArgumentException("mysqlDatabase is required");
+            }
+            if (mysqlUsername == null) {
+                throw new IllegalArgumentException("mysqlUsername is required");
+            }
+            if (mysqlPassword == null) {
+                throw new IllegalArgumentException("mysqlPassword is required");
+            }
+
+            return new MultiAppSchedulerManager(
+                mysqlHost, mysqlPort, mysqlDatabase, mysqlUsername, mysqlPassword, kafkaIngestConfig
+            );
+        }
     }
 }

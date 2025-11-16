@@ -1,0 +1,943 @@
+2025-11-13 05:32:55.801 [main] INFO  c.t.s.kafka.KafkaIntegrationTest - Setting up Kafka integration test
+2025-11-13 05:32:55.803 [main] INFO  c.t.s.kafka.KafkaIntegrationTest - Kafka: localhost:9092
+2025-11-13 05:32:55.804 [main] INFO  c.t.s.kafka.KafkaIntegrationTest - MySQL: 127.0.0.1:3306/scheduler
+2025-11-13 05:32:55.816 [main] INFO  o.a.k.c.admin.AdminClientConfig - AdminClientConfig values: 
+	auto.include.jmx.reporter = true
+	bootstrap.controllers = []
+	bootstrap.servers = [localhost:9092]
+	client.dns.lookup = use_all_dns_ips
+	client.id = 
+	connections.max.idle.ms = 300000
+	default.api.timeout.ms = 60000
+	enable.metrics.push = true
+	metadata.max.age.ms = 300000
+	metadata.recovery.strategy = none
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 2147483647
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+
+2025-11-13 05:32:55.979 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.9.0
+2025-11-13 05:32:55.979 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: 84caaa6e9da06435
+2025-11-13 05:32:55.979 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1762990375977
+2025-11-13 05:32:55.996 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:32:55.997 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:32:56.100 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:32:56.100 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:32:56.201 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:32:56.201 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:32:56.403 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:32:56.404 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:32:56.806 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:32:56.807 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:32:57.610 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:32:57.610 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:32:58.614 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:32:58.614 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:32:59.619 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:32:59.620 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:00.625 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:00.626 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:01.630 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:01.631 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:02.636 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:02.637 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:03.541 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:03.542 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:04.446 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:04.446 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:05.350 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:05.350 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:06.397 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:06.398 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:07.402 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:07.403 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:08.306 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:08.306 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:09.310 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:09.310 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:10.315 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:10.315 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:11.319 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:11.320 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:12.324 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:12.325 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:13.330 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:13.331 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:14.235 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:14.235 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:15.240 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:15.241 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:16.245 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:16.245 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:17.250 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:17.251 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:18.155 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:18.156 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:19.161 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:19.161 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:20.165 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:20.166 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:21.170 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:21.170 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:22.174 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:22.175 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:23.179 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:23.180 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:24.183 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:24.184 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:25.188 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:25.189 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:25.982 [kafka-admin-client-thread | adminclient-1] INFO  o.a.k.c.a.i.AdminMetadataManager - [AdminClient clientId=adminclient-1] Metadata update failed
+org.apache.kafka.common.errors.TimeoutException: Timed out waiting for a node assignment. Call: fetchMetadata
+2025-11-13 05:33:26.185 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:26.186 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:27.190 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:27.191 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:28.194 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:28.195 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:29.099 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:29.099 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:30.103 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:30.103 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:31.007 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:31.008 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:32.011 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:32.012 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:32.915 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:32.916 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:33.819 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:33.820 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:34.823 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:34.824 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:35.828 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:35.829 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:36.832 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:36.832 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:37.836 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:37.837 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:38.741 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:38.741 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:39.645 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:39.645 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:40.648 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:40.648 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:41.652 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:41.652 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:42.656 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:42.656 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:43.559 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:43.559 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:44.563 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:44.563 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:45.567 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:45.567 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:46.571 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:46.571 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:47.575 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:47.575 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:48.478 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:48.478 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:49.481 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:49.481 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:50.384 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:50.385 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:51.388 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:51.389 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:52.393 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:52.394 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:53.397 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:53.398 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:54.401 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:54.401 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:55.404 [kafka-admin-client-thread | adminclient-1] INFO  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Node -1 disconnected.
+2025-11-13 05:33:55.405 [kafka-admin-client-thread | adminclient-1] WARN  o.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:55.983 [kafka-admin-client-thread | adminclient-1] INFO  o.a.k.c.a.i.AdminMetadataManager - [AdminClient clientId=adminclient-1] Metadata update failed
+org.apache.kafka.common.errors.TimeoutException: Timed out waiting for a node assignment. Call: fetchMetadata
+2025-11-13 05:33:56.097 [kafka-admin-client-thread | adminclient-1] INFO  o.a.kafka.common.utils.AppInfoParser - App info kafka.admin.client for adminclient-1 unregistered
+2025-11-13 05:33:56.097 [kafka-admin-client-thread | adminclient-1] INFO  o.a.k.c.a.i.AdminMetadataManager - [AdminClient clientId=adminclient-1] Metadata update failed
+org.apache.kafka.common.errors.TimeoutException: The AdminClient thread has exited. Call: fetchMetadata
+2025-11-13 05:33:56.097 [kafka-admin-client-thread | adminclient-1] INFO  o.a.k.clients.admin.KafkaAdminClient - [AdminClient clientId=adminclient-1] Timed out 1 remaining operation(s) during close.
+2025-11-13 05:33:56.104 [kafka-admin-client-thread | adminclient-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics scheduler closed
+2025-11-13 05:33:56.105 [kafka-admin-client-thread | adminclient-1] INFO  o.a.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2025-11-13 05:33:56.105 [kafka-admin-client-thread | adminclient-1] INFO  o.a.kafka.common.metrics.Metrics - Metrics reporters closed
+2025-11-13 05:33:56.105 [main] WARN  c.t.s.kafka.KafkaIntegrationTest - Topics might already exist: null
+2025-11-13 05:33:56.116 [main] INFO  o.a.k.c.producer.ProducerConfig - ProducerConfig values: 
+	acks = -1
+	auto.include.jmx.reporter = true
+	batch.size = 16384
+	bootstrap.servers = [localhost:9092]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = producer-1
+	compression.gzip.level = -1
+	compression.lz4.level = 9
+	compression.type = none
+	compression.zstd.level = 3
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = true
+	enable.metrics.push = true
+	interceptor.classes = []
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 0
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metadata.recovery.strategy = none
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.adaptive.partitioning.enable = true
+	partitioner.availability.timeout.ms = 0
+	partitioner.class = null
+	partitioner.ignore.keys = false
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 3
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transactional.id = null
+	value.serializer = class org.apache.kafka.common.serialization.StringSerializer
+
+2025-11-13 05:33:56.132 [main] INFO  o.a.k.c.t.i.KafkaMetricsCollector - initializing Kafka metrics collector
+2025-11-13 05:33:56.137 [main] INFO  o.a.k.clients.producer.KafkaProducer - [Producer clientId=producer-1] Instantiated an idempotent producer.
+2025-11-13 05:33:56.155 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.9.0
+2025-11-13 05:33:56.155 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: 84caaa6e9da06435
+2025-11-13 05:33:56.155 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1762990436155
+2025-11-13 05:33:56.212 [MLog-Init-Reporter] INFO  com.mchange.v2.log.MLog - MLog clients using slf4j logging.
+2025-11-13 05:33:56.255 [main] INFO  com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5.4 [built 23-March-2019 23:00:48 -0700; debug? true; trace: 10]
+2025-11-13 05:33:56.342 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:33:56.343 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:56.343 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:56.417 [main] INFO  c.t.scheduler.QuartzTableManager - Checking Quartz tables...
+2025-11-13 05:33:56.432 [main] INFO  c.t.scheduler.QuartzTableManager - All Quartz tables exist
+2025-11-13 05:33:56.438 [main] INFO  c.t.s.MultiAppSchedulerManager - Quartz tables initialized
+2025-11-13 05:33:56.444 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:33:56.444 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:56.444 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:56.451 [main] INFO  o.a.k.c.consumer.ConsumerConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.include.jmx.reporter = true
+	auto.offset.reset = earliest
+	bootstrap.servers = [localhost:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-test-scheduler-group-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = test-scheduler-group
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 10000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 100
+	metadata.max.age.ms = 300000
+	metadata.recovery.strategy = none
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 30000
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+2025-11-13 05:33:56.456 [main] INFO  o.a.k.c.t.i.KafkaMetricsCollector - initializing Kafka metrics collector
+2025-11-13 05:33:56.488 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.9.0
+2025-11-13 05:33:56.488 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: 84caaa6e9da06435
+2025-11-13 05:33:56.488 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1762990436488
+2025-11-13 05:33:56.489 [main] INFO  o.a.k.c.producer.ProducerConfig - ProducerConfig values: 
+	acks = -1
+	auto.include.jmx.reporter = true
+	batch.size = 16384
+	bootstrap.servers = [localhost:9092]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = producer-2
+	compression.gzip.level = -1
+	compression.lz4.level = 9
+	compression.type = none
+	compression.zstd.level = 3
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = true
+	enable.metrics.push = true
+	interceptor.classes = []
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 0
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metadata.recovery.strategy = none
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.adaptive.partitioning.enable = true
+	partitioner.availability.timeout.ms = 0
+	partitioner.class = null
+	partitioner.ignore.keys = false
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 3
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transactional.id = null
+	value.serializer = class org.apache.kafka.common.serialization.StringSerializer
+
+2025-11-13 05:33:56.490 [main] INFO  o.a.k.c.t.i.KafkaMetricsCollector - initializing Kafka metrics collector
+2025-11-13 05:33:56.490 [main] INFO  o.a.k.clients.producer.KafkaProducer - [Producer clientId=producer-2] Instantiated an idempotent producer.
+2025-11-13 05:33:56.495 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka version: 3.9.0
+2025-11-13 05:33:56.497 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka commitId: 84caaa6e9da06435
+2025-11-13 05:33:56.497 [main] INFO  o.a.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1762990436495
+2025-11-13 05:33:56.498 [main] INFO  c.t.s.kafka.KafkaJobIngestConsumer - DLQ producer created for topic: test.scheduler.jobs.dlq
+2025-11-13 05:33:56.498 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:33:56.499 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:56.499 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:56.498 [main] INFO  c.t.s.kafka.KafkaJobIngestConsumer - KafkaJobIngestConsumer created with config: KafkaIngestConfig{bootstrapServers='localhost:9092', groupId='test-scheduler-group', topic='test.scheduler.jobs.ingest', dlqTopic='test.scheduler.jobs.dlq', maxPollRecords=100, pollTimeoutMs=1000, enableAutoCommit=false, maxRetries=2, enabled=true}
+2025-11-13 05:33:56.506 [main] INFO  c.t.s.MultiAppSchedulerManager - Kafka ingest consumer initialized with config: KafkaIngestConfig{bootstrapServers='localhost:9092', groupId='test-scheduler-group', topic='test.scheduler.jobs.ingest', dlqTopic='test.scheduler.jobs.dlq', maxPollRecords=100, pollTimeoutMs=1000, enableAutoCommit=false, maxRetries=2, enabled=true}
+2025-11-13 05:33:56.506 [main] INFO  c.t.s.MultiAppSchedulerManager - MultiAppSchedulerManager initialized with shared Quartz scheduler
+2025-11-13 05:33:56.545 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:33:56.545 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:56.545 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:56.599 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:33:56.600 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:56.600 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:56.700 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:33:56.700 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:56.700 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:56.746 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:33:56.747 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:56.747 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:56.901 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:33:56.902 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:56.902 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:57.036 [main] INFO  c.t.scheduler.AppJobHistoryTracker - Job history table 'sms_job_execution_history' ensured to exist for app 'sms'
+2025-11-13 05:33:57.036 [main] INFO  c.t.scheduler.InfiniteAppScheduler - InfiniteAppScheduler created for app 'sms' with table prefix 'sms_scheduled_jobs' and history table 'sms_job_execution_history'
+2025-11-13 05:33:57.037 [main] INFO  c.t.s.handler.JobHandlerRegistry - Registered job handler for app 'sms': SmsJobHandler
+2025-11-13 05:33:57.037 [main] INFO  c.t.s.MultiAppSchedulerManager - Registered app 'sms' with handler SmsJobHandler
+2025-11-13 05:33:57.040 [main] INFO  c.t.s.MultiAppSchedulerManager - Registered JobCompletionListener
+2025-11-13 05:33:57.055 [main] INFO  c.m.v.c.i.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> z8kfsxbexyt0uy193oteh|4d63b624, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.cj.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceSynchronousCheckins -> false, forceUseNamedDriverClass -> false, identityToken -> z8kfsxbexyt0uy193oteh|4d63b624, idleConnectionTestPeriod -> 50, initialPoolSize -> 3, jdbcUrl -> jdbc:mysql://127.0.0.1:3306/scheduler?useSSL=false&serverTimezone=UTC, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 10, maxStatements -> 0, maxStatementsPerConnection -> 120, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> SELECT 1, privilegeSpawnedThreads -> false, properties -> {password=******, user=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2025-11-13 05:33:57.098 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:33:57.099 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:57.099 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:57.134 [main] INFO  c.t.s.MultiAppSchedulerManager - Started shared Quartz scheduler
+2025-11-13 05:33:57.134 [main] INFO  c.t.scheduler.QuartzCleanupService - Starting Quartz cleanup service with interval: 5 minutes
+2025-11-13 05:33:57.137 [quartz-cleanup] INFO  c.t.scheduler.QuartzCleanupService - Quartz cleanup thread started
+2025-11-13 05:33:57.137 [fetcher-sms] INFO  c.t.scheduler.InfiniteAppScheduler - Fetcher thread started for app 'sms'
+2025-11-13 05:33:57.137 [main] INFO  c.t.scheduler.InfiniteAppScheduler - Started scheduler for app 'sms'
+2025-11-13 05:33:57.137 [main] INFO  c.t.s.kafka.KafkaJobIngestConsumer - Kafka ingest consumer started for topic: test.scheduler.jobs.ingest
+2025-11-13 05:33:57.137 [main] INFO  c.t.s.MultiAppSchedulerManager - Started Kafka ingest consumer
+2025-11-13 05:33:57.137 [main] INFO  c.t.s.MultiAppSchedulerManager - Started all 1 application schedulers
+2025-11-13 05:33:57.137 [main] INFO  c.t.s.kafka.KafkaIntegrationTest - Scheduler started with Kafka ingest
+2025-11-13 05:33:57.138 [kafka-ingest-consumer] INFO  o.a.k.c.c.i.ClassicKafkaConsumer - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Subscribed to topic(s): test.scheduler.jobs.ingest
+2025-11-13 05:33:57.139 [kafka-ingest-consumer] INFO  c.t.s.kafka.KafkaJobIngestConsumer - Subscribed to topic: test.scheduler.jobs.ingest
+2025-11-13 05:33:57.146 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:33:57.146 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:57.146 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:57.165 [MultiAppScheduler_Worker-1] INFO  c.t.scheduler.job.GenericJob - Executing job 'sms-job-19' for app 'sms' with entity ID: 8bdcb574-e9d5-40c9-b3e8-bda1e9f8afc4
+2025-11-13 05:33:57.172 [MultiAppScheduler_Worker-1] INFO  c.t.s.queue.MockQueueProducer - 🔧 MockQueueProducer initialized for topic: sms-notifications (simulating CONSOLE)
+2025-11-13 05:33:57.177 [MultiAppScheduler_Worker-1] INFO  c.t.s.queue.MockQueueProducer - ✅ Message sent to mock queue 'sms-notifications': 7 fields
+2025-11-13 05:33:57.177 [MultiAppScheduler_Worker-1] INFO  c.t.scheduler.job.GenericJob - ✅ Job 'sms-job-19' for app 'sms' produced to queue 'sms-notifications' successfully in 12 ms
+2025-11-13 05:33:57.184 [MultiAppScheduler_Worker-2] INFO  c.t.scheduler.job.GenericJob - Executing job 'sms-job-20' for app 'sms' with entity ID: cc4ff2c6-e490-4152-ada5-2d79c6c9b9de
+2025-11-13 05:33:57.185 [MultiAppScheduler_Worker-2] INFO  c.t.s.queue.MockQueueProducer - ✅ Message sent to mock queue 'sms-notifications': 7 fields
+2025-11-13 05:33:57.185 [MultiAppScheduler_Worker-2] INFO  c.t.scheduler.job.GenericJob - ✅ Job 'sms-job-20' for app 'sms' produced to queue 'sms-notifications' successfully in 1 ms
+2025-11-13 05:33:57.236 [MultiAppScheduler_Worker-3] INFO  c.t.scheduler.job.GenericJob - Executing job 'sipcall-job-12' for app 'sipcall' with entity ID: 09c496ac-f01f-484d-ab41-896d2ba13859
+2025-11-13 05:33:57.237 [MultiAppScheduler_Worker-3] INFO  c.t.s.queue.MockQueueProducer - 🔧 MockQueueProducer initialized for topic: sipcall-queue (simulating CONSOLE)
+2025-11-13 05:33:57.237 [MultiAppScheduler_Worker-3] INFO  c.t.s.queue.MockQueueProducer - ✅ Message sent to mock queue 'sipcall-queue': 7 fields
+2025-11-13 05:33:57.237 [MultiAppScheduler_Worker-3] INFO  c.t.scheduler.job.GenericJob - ✅ Job 'sipcall-job-12' for app 'sipcall' produced to queue 'sipcall-queue' successfully in 1 ms
+2025-11-13 05:33:57.254 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:33:57.254 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:57.254 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:57.275 [MultiAppScheduler_Worker-4] INFO  c.t.scheduler.job.GenericJob - Executing job 'payment-job-8' for app 'payment_gateway' with entity ID: 39a4274e-cfa4-46c9-b9c8-17bece3de78f
+2025-11-13 05:33:57.275 [MultiAppScheduler_Worker-4] INFO  c.t.s.queue.MockQueueProducer - 🔧 MockQueueProducer initialized for topic: payment-transactions (simulating CONSOLE)
+2025-11-13 05:33:57.275 [MultiAppScheduler_Worker-4] INFO  c.t.s.queue.MockQueueProducer - ✅ Message sent to mock queue 'payment-transactions': 7 fields
+2025-11-13 05:33:57.275 [MultiAppScheduler_Worker-4] INFO  c.t.scheduler.job.GenericJob - ✅ Job 'payment-job-8' for app 'payment_gateway' produced to queue 'payment-transactions' successfully in 0 ms
+2025-11-13 05:33:57.354 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:33:57.354 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:57.354 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:57.355 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:33:57.355 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:57.355 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:57.579 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:33:57.579 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:57.580 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:57.853 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:33:57.853 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:57.853 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:57.971 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:33:57.971 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:57.971 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:58.157 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:33:58.157 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:58.157 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:58.857 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:33:58.858 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:58.858 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:58.951 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:33:58.951 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:58.951 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:59.061 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:33:59.062 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:59.062 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:59.152 [main] INFO  c.t.s.kafka.KafkaIntegrationTest - Testing single job processing
+2025-11-13 05:33:59.162 [main] INFO  c.t.s.kafka.KafkaIntegrationTest - Testing multiple job processing
+2025-11-13 05:33:59.166 [main] INFO  c.t.s.kafka.KafkaIntegrationTest - Testing idempotency
+2025-11-13 05:33:59.168 [main] INFO  c.t.s.kafka.KafkaIntegrationTest - Testing DLQ for invalid messages
+2025-11-13 05:33:59.871 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:33:59.872 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:59.872 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:33:59.963 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:33:59.963 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:33:59.963 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:00.061 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:00.061 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:00.062 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:00.866 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:00.866 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:00.866 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:00.989 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:00.989 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:00.989 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:01.061 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:01.061 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:01.061 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:01.770 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:01.770 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:01.770 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:01.906 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:01.906 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:01.906 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:02.066 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:02.066 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:02.066 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:02.744 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:02.745 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:02.745 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:02.775 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:02.775 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:02.775 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:03.081 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:03.081 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:03.081 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:03.629 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:03.629 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:03.630 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:03.791 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:03.791 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:03.791 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:03.935 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:03.935 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:03.935 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:04.629 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:04.629 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:04.629 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:04.720 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:04.720 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:04.720 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:04.985 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:04.986 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:04.986 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:05.634 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:05.634 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:05.634 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:05.721 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:05.722 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:05.722 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:05.839 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:05.839 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:05.839 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:06.639 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:06.639 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:06.639 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:06.722 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:06.723 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:06.723 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:06.844 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:06.844 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:06.844 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:07.646 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:07.646 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:07.646 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:07.722 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:07.723 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:07.723 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:07.845 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:07.845 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:07.845 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:08.646 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:08.646 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:08.646 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:08.697 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:08.697 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:08.697 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:08.870 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:08.870 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:08.870 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:09.550 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:09.550 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:09.550 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:09.706 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:09.706 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:09.706 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:09.878 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:09.878 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:09.878 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:10.505 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:10.505 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:10.506 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:10.544 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:10.544 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:10.544 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:10.879 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:10.879 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:10.879 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:11.509 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:11.510 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:11.510 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:11.549 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:11.549 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:11.549 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:11.804 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:11.805 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:11.805 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:12.489 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:12.489 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:12.489 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:12.510 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:12.510 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:12.510 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:12.840 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:12.840 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:12.841 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:13.396 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:13.396 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:13.396 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:13.435 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:13.436 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:13.436 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:13.844 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:13.845 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:13.845 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:14.290 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:14.290 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:14.290 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:14.396 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:14.397 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:14.397 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:14.849 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:14.849 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:14.849 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:15.190 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:15.191 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:15.191 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:15.245 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:15.245 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:15.245 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:15.702 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:15.702 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:15.702 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:16.213 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:16.213 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:16.213 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:16.293 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:16.293 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:16.293 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:16.734 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:16.734 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:16.734 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:17.066 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:17.067 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:17.067 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:17.273 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:17.274 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:17.274 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:17.692 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:17.692 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:17.692 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:17.970 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:17.970 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:17.970 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:18.292 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:18.292 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:18.292 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:18.695 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:18.696 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:18.696 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:18.971 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:18.971 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:18.971 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:19.292 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:19.293 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:19.293 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:19.598 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:19.599 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:19.599 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:19.971 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:19.971 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:19.971 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:20.293 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:20.293 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:20.293 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:20.615 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:20.615 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:20.615 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:20.975 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:20.975 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:20.975 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:21.294 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:21.294 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:21.294 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:21.569 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:21.569 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:21.569 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:21.829 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:21.829 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:21.829 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:22.294 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:22.294 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:22.294 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:22.423 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:22.423 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:22.423 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:22.829 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:22.829 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:22.829 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:23.273 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:23.273 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:23.273 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:23.300 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:23.300 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:23.300 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:23.830 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:23.830 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:23.830 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:24.221 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:24.221 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:24.221 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:24.266 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:24.267 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:24.267 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:24.733 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:24.733 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:24.733 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:25.160 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:25.160 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:25.160 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:25.225 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:25.225 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:25.225 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:25.637 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:25.637 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:25.637 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:26.160 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:26.160 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:26.161 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:26.229 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:26.229 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:26.229 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:26.490 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:26.491 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:26.491 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:27.018 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:27.018 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:27.018 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:27.230 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:27.230 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:27.230 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:27.490 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:27.491 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:27.491 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:27.859 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:27.859 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:27.860 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:28.231 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:28.231 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:28.231 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:28.494 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:28.494 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:28.494 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:28.860 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:28.860 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:28.860 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:29.232 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:29.232 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:29.232 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:29.494 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:29.495 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:29.495 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:29.874 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:29.874 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:29.874 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:30.135 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:30.135 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:30.135 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:30.494 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:30.494 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:30.494 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:30.875 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:30.875 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:30.875 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:31.139 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:31.140 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:31.140 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:31.498 [kafka-producer-network-thread | producer-1] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Node -1 disconnected.
+2025-11-13 05:34:31.498 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:31.499 [kafka-producer-network-thread | producer-1] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-1] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:31.750 [kafka-ingest-consumer] INFO  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Node -1 disconnected.
+2025-11-13 05:34:31.750 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:31.750 [kafka-ingest-consumer] WARN  o.apache.kafka.clients.NetworkClient - [Consumer clientId=consumer-test-scheduler-group-1, groupId=test-scheduler-group] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected
+2025-11-13 05:34:31.993 [kafka-producer-network-thread | producer-2] INFO  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Node -1 disconnected.
+2025-11-13 05:34:31.993 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+2025-11-13 05:34:31.993 [kafka-producer-network-thread | producer-2] WARN  o.apache.kafka.clients.NetworkClient - [Producer clientId=producer-2] Bootstrap broker localhost:9092 (id: -1 rack: null) disconnected

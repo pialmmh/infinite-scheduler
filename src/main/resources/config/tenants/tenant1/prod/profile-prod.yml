@@ -1,0 +1,115 @@
+# Tenant1 - Production Profile
+# Production environment settings for Tenant1
+
+infinite-scheduler:
+  tenant:
+    name: "tenant1"
+    profile: "prod"
+    description: "Tenant1 production deployment"
+    enabled: true
+
+  # MySQL Database Configuration
+  mysql:
+    host: "10.10.199.11"
+    port: 3306
+    database: "scheduler_tenant1_prod"
+    username: "tenant1_user"
+    password: "${TENANT1_MYSQL_PASSWORD:change_me}"
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: "10.10.199.20:9092,10.10.198.20:9092,10.10.197.20:9092"
+
+    # Ingest Configuration
+    ingest:
+      enabled: true
+      topic: "Job_Schedule_Tenant1"
+      dlq-topic: "Job_Schedule_Tenant1_DLQ"
+      max-retries: 3
+      poll-timeout-ms: 1000
+
+    # Consumer Configuration
+    consumer:
+      group-id: "infinite-scheduler-tenant1-prod"
+      enable-auto-commit: false
+      auto-offset-reset: "earliest"
+      max-poll-records: 500
+
+  # Repository Configuration (Split-Verse)
+  repository:
+    database: "scheduler_tenant1_prod"
+    table-prefix: "scheduled_jobs"
+    retention-days: 30
+
+  # Fetcher Configuration
+  fetcher:
+    enabled: true
+    interval-seconds: 20
+    lookahead-seconds: 35
+    max-jobs-per-fetch: 15000
+
+  # Cleanup Configuration
+  cleanup:
+    enabled: true
+    interval-hours: 24
+    batch-size: 1000
+
+  # Quartz Scheduler Configuration
+  quartz:
+    thread-pool-size: 25
+    misfire-threshold-ms: 60000
+
+  # Web UI Configuration
+  web:
+    enabled: true
+    host: "0.0.0.0"
+    port: 7071
+
+  # Monitoring Configuration
+  monitoring:
+    metrics-enabled: true
+    health-enabled: true
+    logging-level: "INFO"
+    log-file: "/var/log/infinite-scheduler/tenant1-prod.log"
+
+# Quarkus Configuration Overrides for this tenant
+quarkus:
+  http:
+    port: 7071
+
+  datasource:
+    db-kind: mysql
+    username: "tenant1_user"
+    password: "${TENANT1_MYSQL_PASSWORD:change_me}"
+    jdbc:
+      url: "jdbc:mysql://10.10.199.11:3306/scheduler_tenant1_prod?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      min-size: 10
+      max-size: 50
+      initial-size: 10
+      max-lifetime: 4m
+      idle-timeout: 3m
+
+  log:
+    level: INFO
+    category:
+      "com.telcobright.scheduler": INFO
+      "org.quartz": WARN
+
+# SmallRye Reactive Messaging Configuration
+mp:
+  messaging:
+    incoming:
+      job-schedule:
+        connector: smallrye-kafka
+        topic: "Job_Schedule_Tenant1"
+        bootstrap.servers: "10.10.199.20:9092,10.10.198.20:9092,10.10.197.20:9092"
+        group.id: "infinite-scheduler-tenant1-prod"
+        max.poll.records: 500
+
+    outgoing:
+      sms-send:
+        connector: smallrye-kafka
+        topic: "SMS_Send_Tenant1"
+        bootstrap.servers: "10.10.199.20:9092,10.10.198.20:9092,10.10.197.20:9092"
+        acks: all
+        enable.idempotence: true

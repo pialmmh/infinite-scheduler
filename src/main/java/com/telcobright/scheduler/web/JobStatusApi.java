@@ -42,6 +42,7 @@ public class JobStatusApi {
         app.get("/api/jobs/scheduled", this::getScheduledJobs);
         app.get("/api/jobs/history", this::getJobHistory);
         app.get("/api/jobs/stats", this::getJobStats);
+        app.get("/api/tables", this::getSplitVerseTables);
 
         logger.info("Job Status API started on port {}", port);
         logger.info("Access UI at: http://localhost:{}/index.html", port);
@@ -231,6 +232,79 @@ public class JobStatusApi {
         } catch (SQLException e) {
             logger.error("Error fetching job stats", e);
             ctx.status(500).result("Error fetching job stats: " + e.getMessage());
+        }
+    }
+
+    private void getSplitVerseTables(Context ctx) {
+        try (Connection conn = dataSource.getConnection()) {
+            // First, get the current database name
+            String databaseName;
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT DATABASE()");
+                 ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    databaseName = rs.getString(1);
+                } else {
+                    throw new SQLException("Could not determine database name");
+                }
+            }
+
+            // Query information_schema for Split-Verse tables
+            String sql = "SELECT " +
+                        "    TABLE_NAME, " +
+                        "    CREATE_TIME, " +
+                        "    TABLE_ROWS, " +
+                        "    DATA_LENGTH, " +
+                        "    INDEX_LENGTH " +
+                        "FROM information_schema.TABLES " +
+                        "WHERE TABLE_SCHEMA = ? " +
+                        "    AND TABLE_NAME LIKE 'scheduled_jobs_%' " +
+                        "ORDER BY TABLE_NAME DESC";
+
+            List<Map<String, Object>> tables = new ArrayList<>();
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, databaseName);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        Map<String, Object> table = new HashMap<>();
+                        table.put("tableName", rs.getString("TABLE_NAME"));
+
+                        Timestamp createTime = rs.getTimestamp("CREATE_TIME");
+                        table.put("createTime", createTime != null ? createTime.toString() : null);
+
+                        table.put("rowCount", rs.getLong("TABLE_ROWS"));
+                        table.put("dataLength", rs.getLong("DATA_LENGTH"));
+                        table.put("indexLength", rs.getLong("INDEX_LENGTH"));
+
+                        // Calculate total size in MB
+                        long totalBytes = rs.getLong("DATA_LENGTH") + rs.getLong("INDEX_LENGTH");
+                        double totalMB = totalBytes / (1024.0 * 1024.0);
+                        table.put("totalSizeMB", String.format("%.2f", totalMB));
+
+                        // Extract date from table name (e.g., scheduled_jobs_20251115)
+                        String tableName = rs.getString("TABLE_NAME");
+                        if (tableName.length() >= 20) {
+                            String dateStr = tableName.substring(15); // Extract YYYYMMDD
+                            table.put("tableDate", dateStr);
+                        }
+
+                        tables.add(table);
+                    }
+                }
+            }
+
+            // Add metadata
+            Map<String, Object> response = new HashMap<>();
+            response.put("database", databaseName);
+            response.put("tableCount", tables.size());
+            response.put("tables", tables);
+
+            ctx.json(response);
+
+        } catch (SQLException e) {
+            logger.error("Error fetching Split-Verse tables", e);
+            ctx.status(500).result("Error fetching Split-Verse tables: " + e.getMessage());
         }
     }
 }
